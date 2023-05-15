@@ -7,6 +7,25 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    public function apiPost(Request $request)
+    {
+        $data = [
+            'title' => $request->get('title'),
+            'body' => $request->get('body'),
+            'user_id' => $request->get('user_id'),
+        ];
+        Post::create($data);
+        $res = [
+            'status' => 200,
+            'message' => 'created ok',
+        ];
+        return $res;
+    }
+
+    public function getPost()
+    {
+        return view('new_post');
+    }
     // Delete Post
     public function deletePost(Post $post){
         if(auth()->user()->id === $post['user_id']){ // If you are the author of this Post
@@ -15,6 +34,11 @@ class PostController extends Controller
         return redirect('/'); 
     }
 
+    public function showViewScreen($postId)
+    {
+        $post = Post::find($postId);
+        return view('view-post',['post' => $post]);
+    }
     // Users click the Edit button and they see the Edit Post Screen
     public function showEditScreen(Post $post) {
         if(auth()->user()->id !== $post['user_id']){    // Dùng Middleware như bộ lọc

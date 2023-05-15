@@ -31,14 +31,13 @@ Route::get('/login_page',function(){
 
 // Blog post related routes
 
-Route::post('/create-post',[PostController::class,'createPost']); // Create post
-Route::get('/edit-post/{post}',[PostController::class,'showEditScreen']); // Edit screen
-Route::put('/edit-post/{post}',[PostController::class,'actuallyUpdatePost']); // Update post
-Route::delete('/delete-post/{post}',[PostController::class,'deletePost']); // Delete post
-Route::get('/new_post',function(){
-    return view(view:'new_post');
-})->middleware(CheckLogin::class);
+Route::group(['middleware' => ['check_login']], function () {
+	Route::get('/', [UserController::class,'home']);
+	Route::get('/create-post',[PostController::class,'getPost'])->name('getPost');
+	Route::post('/create-post',[PostController::class,'createPost']);
+	Route::get('/edit-post/{post}',[PostController::class,'showEditScreen']);
+	Route::get('/view-post/{post}',[PostController::class,'showViewScreen']);
+	Route::put('/edit-post/{post}',[PostController::class,'actuallyUpdatePost']); // Update post
+	Route::delete('/delete-post/{post}',[PostController::class,'deletePost']); // Delete post
+});
 
-// View home page
-
-Route::get('/', [UserController::class,'home'])->middleware(CheckLogin::class);

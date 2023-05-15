@@ -8,7 +8,7 @@
                         <h2>All Posts</h2>
                     </div>
                     <div class="card-body">
-                        <a href="/new_post" class="btn btn-success" title="Add New Student">
+                        <a href="{{route('getPost')}}" class="btn btn-success" title="Add New Student">
                             <i class="fa fa-plus" aria-hidden="true"></i> Add New
                         </a>
                         <br/>
@@ -19,7 +19,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Title</th>
-                                        <th>Body</th>                              
+                                        <th>Body</th>                           
+                                        <th>Comment</th>                         
+                                        <th>Action</th>                         
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -29,8 +31,12 @@
                                         <td>{{ $post->title }}</td>
                                         <td>{{ $post->body }}</td>
                                         <td>
+                                            comment 1: user1 <br/>
+                                            comment2: user2
+                                        </td>
+                                        <td>
                                             <a href="/edit-post/{{$post->id}}" title="Edit Student"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
- 
+                                            <a href="/view-post/{{$post->id}}" title="Edit Student"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> View</button></a>
                                             <form method="POST" action="/delete-post/{{$post->id}}" accept-charset="UTF-8" style="display:inline">
                                                 {{ method_field('DELETE') }}
                                                 {{ csrf_field() }}

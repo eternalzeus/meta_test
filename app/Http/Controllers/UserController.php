@@ -84,12 +84,12 @@ class UserController extends Controller
             //dd($user);
             $userId = $user->id;
             //dd($userId);
-            $data = Post::where('user_id', $userId)->get(); // get() ~ SELECT, where() ~ WHERE in querry
+            $data = Post::all(); // get() ~ SELECT, where() ~ WHERE in querry
             //dd($data);
-            $posts = auth() -> user() -> usersCoolPosts() -> oldest() -> get();   // Sort all posts by date
+            // $posts = auth()->user()->posts()->latest()->get();   // Sort all posts by date
         }
         // $posts = Post::where('user_id', auth()->id())->get(); 
-        // dd($posts);
-        return view('home',['posts' => $posts]);
+        // dd($posts, $data);
+        return view('home',['posts' => $data]);
     }
 }
