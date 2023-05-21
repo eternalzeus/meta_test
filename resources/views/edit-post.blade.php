@@ -22,7 +22,10 @@
                     <span style="color: red;"> {{$message}} </span>
                 @enderror
             </div>
-            <button class="btn btn-primary">Save</button>
+            <button class="btn btn-primary btn-lg">Save</button>
+            <a href="{{route('home')}}" class="btn btn-success float-end btn-lg" title="Back">
+                <i class="fa fa-plus" aria-hidden="true"></i> Back
+            </a>
         </form>
     </div>
 </div>

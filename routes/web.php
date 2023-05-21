@@ -32,12 +32,13 @@ Route::get('/login_page',function(){
 // Blog post related routes
 
 Route::group(['middleware' => ['check_login']], function () {
-	Route::get('/', [UserController::class,'home']);
-	Route::get('/create-post',[PostController::class,'getPost'])->name('getPost');
-	Route::post('/create-post',[PostController::class,'createPost']);
-	Route::get('/edit-post/{post}',[PostController::class,'showEditScreen']);
-	Route::get('/view-post/{post}',[PostController::class,'showViewScreen']);
+	Route::get('/', [UserController::class,'home'])->name('home'); // Home
+	Route::get('/create-post',[PostController::class,'getPost'])->name('getPost'); // View create post
+	Route::post('/create-post',[PostController::class,'createPost']);	// Create post
+	Route::get('/edit-post/{post}',[PostController::class,'showEditScreen']); // View edit post
 	Route::put('/edit-post/{post}',[PostController::class,'actuallyUpdatePost']); // Update post
+	Route::get('/view-post/{post}',[PostController::class,'showViewScreen']); // View post
+	Route::post('/view-post/{post}',[PostController::class,'comment']); // Update comment
 	Route::delete('/delete-post/{post}',[PostController::class,'deletePost']); // Delete post
 });
 

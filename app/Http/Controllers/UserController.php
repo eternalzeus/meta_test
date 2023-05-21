@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     private function test(){
-        dd(333);
     }
     // Users new register
     public function register(Request $request){
@@ -78,18 +78,14 @@ class UserController extends Controller
     // Home page
     public function home () {
         // dd(Session::all());
-        $posts = [];
+        // $posts = [];
         if(auth()->check()){
-            $user = auth() -> user();
-            //dd($user);
-            $userId = $user->id;
-            //dd($userId);
-            $data = Post::all(); // get() ~ SELECT, where() ~ WHERE in querry
-            //dd($data);
+            $posts = Post::all(); // get() ~ SELECT, where() ~ WHERE in querry
+            $comments = Comment::all();
+            $users = User::all();
             // $posts = auth()->user()->posts()->latest()->get();   // Sort all posts by date
         }
         // $posts = Post::where('user_id', auth()->id())->get(); 
-        // dd($posts, $data);
-        return view('home',['posts' => $data]);
+        return view('home',compact('posts','comments','users'));
     }
 }

@@ -45,4 +45,7 @@ class User extends Authenticatable  // map to users table, derive class User fro
     public function posts(){
         return $this->hasMany(Post::class,'user_id'); // User quan hệ 1 nhiều vs Post thông qua user_id là foreign key
     } 
+    public function comments(){
+        return $this->belongsToMany(Comment::class);
+    }
 }

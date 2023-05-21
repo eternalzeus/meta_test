@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <form action="/logout" method="POST">
             @csrf
-            <button class="btn btn-danger">Log out</button>
+            <button class="btn btn-danger ">Log out</button>
         </form>
         <div class="collapse navbar-collapse" id="navbarText">
         </div>

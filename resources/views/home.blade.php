@@ -1,5 +1,15 @@
 @extends('layout.layout_2')
 @section('content')
+    @if ($message = Session::get('error'))
+        <div class="alert alert-danger alert-block" >
+            <strong> {{$message}} </strong>
+        </div>
+    @endif
+    @if ($message = Session::get('success'))
+        <div class="alert alert-success alert-block" >
+            <strong> {{$message}} </strong>
+        </div>
+    @endif
     <div class="container">
         <div class="row">
             <div class="col-md-9">
@@ -19,7 +29,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Title</th>
-                                        <th>Body</th>                           
+                                        <th>Content</th>                           
                                         <th>Comment</th>                         
                                         <th>Action</th>                         
                                     </tr>
@@ -31,11 +41,19 @@
                                         <td>{{ $post->title }}</td>
                                         <td>{{ $post->body }}</td>
                                         <td>
-                                            comment 1: user1 <br/>
-                                            comment2: user2
+                                            @foreach($comments as $comment)
+                                                @if ($post->id==$comment->post_id)
+                                                    @foreach ($users as $user)
+                                                        @if ($comment->user_id==$user->id)
+                                                            {{$user->name}}: {{$comment->comment}}
+                                                        @endif
+                                                    @endforeach
+                                                    <br>
+                                                @endif
+                                            @endforeach
                                         </td>
                                         <td>
-                                            <a href="/edit-post/{{$post->id}}" title="Edit Student"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
+                                            <a href="/edit-post/{{$post->id}}" title="Edit Student"><button class="btn btn-secondary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
                                             <a href="/view-post/{{$post->id}}" title="Edit Student"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> View</button></a>
                                             <form method="POST" action="/delete-post/{{$post->id}}" accept-charset="UTF-8" style="display:inline">
                                                 {{ method_field('DELETE') }}
