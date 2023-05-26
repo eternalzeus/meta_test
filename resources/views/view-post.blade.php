@@ -26,13 +26,11 @@
             </div>
           </div>
           <br>
-          @php
-            $image = DB::table('posts')->where('id',$post->id)->first();
-            $images = explode('|', $image->image); // explode() to divide the full string into array by |
-          @endphp
           <h4>Images</h4>
-          @foreach ($images as $item)
-            <img src="{{URL::to($item)}}" style="height:200px; width:200px" alt="">
+          @foreach ($images as $image)
+            @if ($post->id==$image->post_id)
+            <img src="{{URL::to($image->path)}}" style="height:200px; width:200px" alt="">
+            @endif
           @endforeach
           <div class="mb-3">
             <br>

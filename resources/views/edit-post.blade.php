@@ -5,7 +5,7 @@
       <h2>Edit Post</h2>
     </div>
     <div class="card-body">
-        <form action="/edit-post/{{$post->id}}" method="POST">
+        <form action="/edit-post/{{$post->id}}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')  
             <div class="col-md-4 mb-3">
@@ -21,7 +21,8 @@
                 @error('body')
                     <span style="color: red;"> {{$message}} </span>
                 @enderror
-            </div>
+            
+            <br>
             <button class="btn btn-primary btn-lg">Save</button>
             <a href="{{route('home')}}" class="btn btn-success float-end btn-lg" title="Back">
                 <i class="fa fa-plus" aria-hidden="true"></i> Back

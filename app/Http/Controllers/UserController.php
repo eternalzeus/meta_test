@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Image;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -83,6 +84,7 @@ class UserController extends Controller
             $posts = Post::all(); // get() ~ SELECT, where() ~ WHERE in querry
             $comments = Comment::all();
             $users = User::all();
+            $images = Image::all();
             // $posts = auth()->user()->posts()->latest()->get();   // Sort all posts by date
         }
         // $posts = Post::where('user_id', auth()->id())->get(); 

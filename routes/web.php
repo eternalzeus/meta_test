@@ -38,6 +38,10 @@ Route::group(['middleware' => ['check_login']], function () {
 	Route::get('/edit-post/{post}',[PostController::class,'showEditScreen']); // View edit post
 	Route::put('/edit-post/{post}',[PostController::class,'actuallyUpdatePost']); // Update post
 	Route::get('/view-post/{post}',[PostController::class,'showViewScreen']); // View post
+	Route::get('/edit-image/{image}',[PostController::class,'showEditImage']); // Edit image Screen
+	Route::delete('/delete-image/{image}',[PostController::class,'deleteImage']); // Delete image
+	Route::post('/add-image/{id}',[PostController::class,'addImage']); // Add image, Id is user id from blade 
+	Route::put('/update-image/{image_id}',[PostController::class,'editImage']); // Update image
 	Route::post('/view-post/{post}',[PostController::class,'comment']); // Update comment
 	Route::delete('/delete-post/{post}',[PostController::class,'deletePost']); // Delete post
 });

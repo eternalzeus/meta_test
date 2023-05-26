@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Image;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model    // map to posts table
 {
@@ -16,5 +17,8 @@ class Post extends Model    // map to posts table
     }
     public function comments(){
         return $this->hasMany(Comment::class,'post_id');
+    }
+    public function images(){
+        return $this->hasMany(Image::class,'post_id');
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_id')->constrained();
             $table->integer('user_id');
-            $table->string('comment');
+            $table->text('comment');
             $table->timestamps();
         });
     }
