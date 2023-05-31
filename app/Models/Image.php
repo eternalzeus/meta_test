@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model
 {
-    protected $fillable = ['post_id','path','name'];
+    protected $guarded = [];
     use HasFactory;
-    public function post(){
-        return $this->belongsTo(Post::class,'post_id');
+    public function imageable(){
+        return $this->morphTo();
     }
 }

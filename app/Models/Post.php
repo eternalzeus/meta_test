@@ -19,6 +19,6 @@ class Post extends Model    // map to posts table
         return $this->hasMany(Comment::class,'post_id');
     }
     public function images(){
-        return $this->hasMany(Image::class,'post_id');
+        return $this->morphMany(Image::class,'imageable');
     }
 }

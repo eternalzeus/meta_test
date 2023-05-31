@@ -45,7 +45,7 @@
                                                 @if ($post->id==$comment->post_id)
                                                     @foreach ($users as $user)
                                                         @if ($comment->user_id==$user->id)
-                                                            {{$user->name}}: {{$comment->comment}}
+                                                            {{$user->name}}: {!! nl2br(e($comment->comment)) !!}
                                                         @endif
                                                     @endforeach
                                                     <br>
@@ -55,7 +55,7 @@
                                         <td>
                                             <a href="/edit-post/{{$post->id}}" title="Edit Student"><button class="btn btn-secondary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
                                             <a href="/edit-image/{{$post->id}}" title="Edit Student"><button class="btn btn-warning btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit Image</button></a>
-                                            <a href="/view-post/{{$post->id}}" title="Edit Student"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> View</button></a>
+                                            <a href="/view-post/{{$post->id}}" title="View Post"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> View</button></a>
                                             <form method="POST" action="/delete-post/{{$post->id}}" accept-charset="UTF-8" style="display:inline">
                                                 {{ method_field('DELETE') }}
                                                 {{ csrf_field() }}

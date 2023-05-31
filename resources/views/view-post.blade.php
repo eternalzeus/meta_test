@@ -28,7 +28,7 @@
           <br>
           <h4>Images</h4>
           @foreach ($images as $image)
-            @if ($post->id==$image->post_id)
+            @if ($post->id==$image->imageable_id)
             <img src="{{URL::to($image->path)}}" style="height:200px; width:200px" alt="">
             @endif
           @endforeach
