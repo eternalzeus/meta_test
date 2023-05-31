@@ -64,8 +64,9 @@ class PostController extends Controller
     }
 
     // Edit Post Screen
-    public function showEditScreen(Post $post) {
-        $images = Image::all();
+    public function showEditScreen(Post $post, $Id) {
+        $post = Post::find($Id);
+        $images = $post->images;
         if(auth()->user()->id !== $post['user_id']){    // If you are the author of this Post
             return back()->with ('error', 'Your are not the author of this post');
         }
@@ -76,19 +77,48 @@ class PostController extends Controller
     }
 
     // Comment
-    public function comment(Post $post, Request $request){
-        $rules = [
-            'comment' => 'required'
-        ];
-        $message = [
-            'comment.required'=>'Comment is required'
-        ];
-        $incomingFields = $request->validate($rules, $message);
-        $incomingFields['post_id'] = $post['id'];
-        $incomingFields['user_id'] = auth()->id();
-        $incomingFields['comment'] = strip_tags($incomingFields['comment']);
-        Comment::create($incomingFields);
-        return redirect('/');
+    public function comment(Post $post, Request $request, $Id){
+        // $rules = [
+        //     'comment' => 'required',
+        //     'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        // ];
+        // $message = [
+        //     'comment.required'=>'Comment is required',
+        //     'images.*.image' => 'The input file must be images',
+        //     'images.*.mimes' => 'The image type must be jpeg,png,jpg,gif',
+        //     'images.*.max' => "The size of the file is too big (max:2mb)"
+        // ];
+        // $incomingFields = $request->validate($rules, $message);
+        // $incomingFields['post_id'] = $Id;
+        // $incomingFields['user_id'] = auth()->id();
+        // $incomingFields['comment'] = strip_tags($incomingFields['comment']);
+        // Comment::create($incomingFields);
+        // if($files = $request->file('images')){
+        //     foreach ($files as $file){
+        //         $image_name = md5(rand(100,1000));      
+        //         $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
+        //         $image_full_name = $image_name.'.'.$ext;
+        //         Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
+
+        //         // $imageFields['imageable_id'] = Post::max('id');
+        //         // $imageFields['imageable_type'] = 'Comment\Post';
+        //         // $imageFields['path'] = Storage::url($image_full_name);
+        //         // $imageFields['name'] = $image_full_name;
+
+        //         $comment = Comment::find(Comment::max('id'));
+        //         $image = new Image;
+        //         $image->path = Storage::url($image_full_name);
+        //         $image->name = $image_full_name;
+        //         $comment->images()->save($image);
+        //         // Image::create($imageFields);
+        //     }
+        // }
+        return response()->json([
+            'message'   => 'Image Upload Successfully',
+            // 'uploaded_image' => '<img src="{{URL::to($image->path)}} width="300" />',
+            'class_name'  => 'alert-success'
+        ]);
+        // return redirect('/');
     }
 
 
@@ -116,27 +146,26 @@ class PostController extends Controller
     public function createPost(Request $request){
         $rules = [
             'title' => 'required',
-            'body' => 'required'
+            'body' => 'required',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
         $message = [
             'title.required'=>'Title is required',
-            'body.required' => 'Content is required'
+            'body.required' => 'Content is required',
+            'images.*.image' => 'The input file must be images',
+            'images.*.mimes' => 'The image type must be jpeg,png,jpg,gif',
+            'images.*.max' => "The size of the file is too big (max:2mb)"
         ];
         $incomingFields = $request->validate($rules, $message);
         $incomingFields['title'] = strip_tags($incomingFields['title']); 
         $incomingFields['body'] = strip_tags($incomingFields['body']);
-        $incomingFields['user_id'] = auth()->id(); // Call the global auth for knowing who is creating post
-        // $image = array();
+        $incomingFields['user_id'] = auth()->id(); // Who is creating post
         Post::create($incomingFields);
-        if($files = $request->file('image')){ // Nếu file upload là file ảnh
+        if($files = $request->file('images')){
             foreach ($files as $file){
                 $image_name = md5(rand(100,1000));
                 $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
                 $image_full_name = $image_name.'.'.$ext;
-                // $upload_path = 'storage/multiple_image/';
-                // $image_url = $upload_path.$image_full_name;
-                // $file->move($upload_path, $image_full_name);
-                // $image[] = $image_url;
                 Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
 
                 // $imageFields['imageable_id'] = Post::max('id');
@@ -149,7 +178,6 @@ class PostController extends Controller
                 $image->path = Storage::url($image_full_name);
                 $image->name = $image_full_name;
                 $post->images()->save($image);
-                // dd($post);
                 // Image::create($imageFields);
             }
         }

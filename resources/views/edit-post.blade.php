@@ -42,11 +42,12 @@
                                         </thead>
                                         <tbody>
                                             @foreach($images as $index => $image)
-                                                @if ($post->id==$image->post_id)
+                                                @if ($post->id==$image->imageable_id)
                                                     <tr>
                                                         <td id='test'><img src="{{URL::to($image->path)}}" style="height:200px; width:200px" alt=""></td>
                                                         <td>
-                                                            <form action="/update-image/{{$image->id}}" method="POST" id="upload_form" enctype="multipart/form-data">
+                                                            <form  method="POST" id="upload_form" enctype="multipart/form-data">
+                                                                {{-- action="/update-image/{{$image->id}}" --}}
                                                                 {{ method_field('PUT') }}
                                                                 {{ csrf_field() }}
                                                                 <div class="mb-3">
@@ -93,7 +94,7 @@
         $('#upload_form').on('submit', function(event){
             event.preventDefault();
             $.ajax({
-                url:'/update-image/' + image_id,
+                url:'/update-image/' + $image->id,
                 method:"POST",
                 data:new FormData(this),
                 dataType:'JSON',
