@@ -78,41 +78,41 @@ class PostController extends Controller
 
     // Comment
     public function comment(Post $post, Request $request, $Id){
-        // $rules = [
-        //     'comment' => 'required',
-        //     'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-        // ];
-        // $message = [
-        //     'comment.required'=>'Comment is required',
-        //     'images.*.image' => 'The input file must be images',
-        //     'images.*.mimes' => 'The image type must be jpeg,png,jpg,gif',
-        //     'images.*.max' => "The size of the file is too big (max:2mb)"
-        // ];
-        // $incomingFields = $request->validate($rules, $message);
-        // $incomingFields['post_id'] = $Id;
-        // $incomingFields['user_id'] = auth()->id();
-        // $incomingFields['comment'] = strip_tags($incomingFields['comment']);
-        // Comment::create($incomingFields);
-        // if($files = $request->file('images')){
-        //     foreach ($files as $file){
-        //         $image_name = md5(rand(100,1000));      
-        //         $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
-        //         $image_full_name = $image_name.'.'.$ext;
-        //         Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
+        $rules = [
+            'comment' => 'required',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ];
+        $message = [
+            'comment.required'=>'Comment is required',
+            'images.*.image' => 'The input file must be images',
+            'images.*.mimes' => 'The image type must be jpeg,png,jpg,gif',
+            'images.*.max' => "The size of the file is too big (max:2mb)"
+        ];
+        $incomingFields = $request->validate($rules, $message);
+        $incomingFields['post_id'] = $Id;
+        $incomingFields['user_id'] = auth()->id();
+        $incomingFields['comment'] = strip_tags($incomingFields['comment']);
+        Comment::create($incomingFields);
+        if($files = $request->file('images')){
+            foreach ($files as $file){
+                $image_name = md5(rand(100,1000));      
+                $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
+                $image_full_name = $image_name.'.'.$ext;
+                Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
 
-        //         // $imageFields['imageable_id'] = Post::max('id');
-        //         // $imageFields['imageable_type'] = 'Comment\Post';
-        //         // $imageFields['path'] = Storage::url($image_full_name);
-        //         // $imageFields['name'] = $image_full_name;
+                // $imageFields['imageable_id'] = Post::max('id');
+                // $imageFields['imageable_type'] = 'Comment\Post';
+                // $imageFields['path'] = Storage::url($image_full_name);
+                // $imageFields['name'] = $image_full_name;
 
-        //         $comment = Comment::find(Comment::max('id'));
-        //         $image = new Image;
-        //         $image->path = Storage::url($image_full_name);
-        //         $image->name = $image_full_name;
-        //         $comment->images()->save($image);
-        //         // Image::create($imageFields);
-        //     }
-        // }
+                $comment = Comment::find(Comment::max('id'));
+                $image = new Image;
+                $image->path = Storage::url($image_full_name);
+                $image->name = $image_full_name;
+                $comment->images()->save($image);
+                // Image::create($imageFields);
+            }
+        }
         return response()->json([
             'message'   => 'Image Upload Successfully',
             // 'uploaded_image' => '<img src="{{URL::to($image->path)}} width="300" />',

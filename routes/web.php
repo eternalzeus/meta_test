@@ -42,7 +42,7 @@ Route::group(['middleware' => ['check_login']], function () {
 	Route::delete('/delete-image/{image}',[PostController::class,'deleteImage']); // Delete image
 	Route::post('/add-image/{id}',[PostController::class,'addImage']); // Add image, Id is user id from blade
 	Route::put('/update-image/{image_id}',[PostController::class,'editImage'])->name('Image.update'); // Update image
-	Route::post('/view-post',[PostController::class,'comment']); // Update comment
+	Route::post('/view-post/{id}',[PostController::class,'comment']); // Update comment
 	Route::delete('/delete-post/{post}',[PostController::class,'deletePost']); // Delete post
 
 	Route::post('/ajax_upload', [PostController::class,'action'])->name('ajaxupload.action');
