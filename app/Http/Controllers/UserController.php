@@ -88,6 +88,6 @@ class UserController extends Controller
             // $posts = auth()->user()->posts()->latest()->get();   // Sort all posts by date
         }
         // $posts = Post::where('user_id', auth()->id())->get(); 
-        return view('home',compact('posts','comments','users'));
+        return view('post.home',compact('posts','comments','users','images'));
     }
 }

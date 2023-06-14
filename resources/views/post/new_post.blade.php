@@ -1,5 +1,6 @@
 @extends('layout.layout_2')
 @section('content')
+{{ Breadcrumbs::render('create_post') }}
 <div class = "card " >
   <div class="card-header">
     <h2>New Post</h2>
@@ -30,9 +31,6 @@
           @enderror
         </div>
         <button class="btn btn-primary">Submit</button>
-        <a href="{{route('home')}}" class="btn btn-success float-end" title="Back">
-          <i class="fa fa-plus" aria-hidden="true"></i> Back
-        </a>
     </form>
   </div>
 </div>

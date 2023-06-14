@@ -29,7 +29,7 @@ class PostController extends Controller
 
     public function getPost()
     {
-        return view('new_post');
+        return view('post.new_post');
     }
     // Delete Post
     public function deletePost(Post $post, Image $image){
@@ -53,14 +53,14 @@ class PostController extends Controller
         // $images = Image::all();
         $post = Post::find($postId);
         $images = $post->images;
-        return view('view-post',compact('post','images')); // 'post' represent for $post in blade view
+        return view('post.view_post',compact('post','images')); // 'post' represent for $post in blade view
     }
 
     // Edit image
     public function showEditImage($postId){
         $images = Image::all();
         $post = Post::find($postId);
-        return view('edit-image',compact('post','images')); // 'post' represent for $post in blade view
+        return view('post.edit-image',compact('post','images')); // 'post' represent for $post in blade view
     }
 
     // Edit Post Screen
@@ -71,7 +71,7 @@ class PostController extends Controller
             return back()->with ('error', 'Your are not the author of this post');
         }
         else{
-            return view('edit-post',compact('post','images')); 
+            return view('post.edit_post',compact('post','images')); 
         }
         
     }
@@ -100,25 +100,15 @@ class PostController extends Controller
                 $image_full_name = $image_name.'.'.$ext;
                 Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
 
-                // $imageFields['imageable_id'] = Post::max('id');
-                // $imageFields['imageable_type'] = 'Comment\Post';
-                // $imageFields['path'] = Storage::url($image_full_name);
-                // $imageFields['name'] = $image_full_name;
-
                 $comment = Comment::find(Comment::max('id'));
                 $image = new Image;
                 $image->path = Storage::url($image_full_name);
                 $image->name = $image_full_name;
                 $comment->images()->save($image);
-                // Image::create($imageFields);
             }
         }
-        return response()->json([
-            'message'   => 'Image Upload Successfully',
-            // 'uploaded_image' => '<img src="{{URL::to($image->path)}} width="300" />',
-            'class_name'  => 'alert-success'
-        ]);
-        // return redirect('/');
+        return redirect('/');
+        // return back();
     }
 
 
@@ -154,7 +144,7 @@ class PostController extends Controller
             'body.required' => 'Content is required',
             'images.*.image' => 'The input file must be images',
             'images.*.mimes' => 'The image type must be jpeg,png,jpg,gif',
-            'images.*.max' => "The size of the file is too big (max:2mb)"
+            'images.*.max' => "The size of the file is too big (max:2 MB)"
         ];
         $incomingFields = $request->validate($rules, $message);
         $incomingFields['title'] = strip_tags($incomingFields['title']); 
@@ -167,12 +157,6 @@ class PostController extends Controller
                 $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
                 $image_full_name = $image_name.'.'.$ext;
                 Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
-
-                // $imageFields['imageable_id'] = Post::max('id');
-                // $imageFields['imageable_type'] = 'Comment\Post';
-                // $imageFields['path'] = Storage::url($image_full_name);
-                // $imageFields['name'] = $image_full_name;
-
                 $post = Post::find(Post::max('id'));
                 $image = new Image;
                 $image->path = Storage::url($image_full_name);
@@ -195,19 +179,21 @@ class PostController extends Controller
     }
 
     // Add image
-    public function addImage(Request $request, $Id){ // Id is taken from Route '/add-image/{id}'
-        if($files = $request->file('image')){
-            foreach ($files as $file){
-                $image_name = md5(rand(100,1000));
-                $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
-                $image_full_name = $image_name.'.'.$ext;
-                Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
-                $imageFields['post_id'] = $Id;
-                $imageFields['path'] = Storage::url($image_full_name);
-                $imageFields['name'] = $image_full_name;
-                Image::create($imageFields);
-            }
+    public function addImage(Request $request, $Id){ // Id is taken from Route '/add-image/{id}'    
+    if($files = $request->file('images')){
+        foreach ($files as $file){
+            $image_name = md5(rand(100,1000));
+            $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
+            $image_full_name = $image_name.'.'.$ext;
+            Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
+            $post = Post::find($Id);
+            $image = new Image;
+            $image->path = Storage::url($image_full_name);
+            $image->name = $image_full_name;
+            $post->images()->save($image);
+            // Image::create($imageFields);
         }
+    }
         return redirect('/');
     }
     // Update image
@@ -227,46 +213,35 @@ class PostController extends Controller
                     $image->path = Storage::url($image_full_name);
                     $image->name = $image_full_name;
                     $image->update();
-                    return response()->json([
-                    'message'   => 'Image Upload Successfully',
-                    'uploaded_image' => '<img src="{{URL::to($image->path)}} width="300" />',
-                    'class_name'  => 'alert-success'
-                    ]);
+                    return redirect('/');
                 }
             }
-           else{
-            return response()->json([
-             'message'   => $validation->errors()->all(),
-             'uploaded_image' => '',
-             'class_name'  => 'alert-danger'
-            ]);
-           }
-        // else return back();
+        else return back();
         // return respond()->json;
     }
 
-    function action(Request $request){
-        $validation = Validator::make($request->all(), [
-            'select_file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
-        if($validation->passes()){
-            $image = $request->file('select_file');
-            $new_name = rand() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images'), $new_name);
-            return response()->json([
-                'message'   => 'Image Upload Successfully',
-                'uploaded_image' => '<img src="/images/'.$new_name.'" class="img-thumbnail" width="300" />',
-                'class_name'  => 'alert-success'
-            ]);
-        }
-        else{
-            return response()->json([
-                'message'   => $validation->errors()->all(),
-                'uploaded_image' => '',
-                'class_name'  => 'alert-danger'
-            ]);
-        }
-    }
+    // function action(Request $request){
+    //     $validation = Validator::make($request->all(), [
+    //         'select_file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+    //     ]);
+    //     if($validation->passes()){
+    //         $image = $request->file('select_file');
+    //         $new_name = rand() . '.' . $image->getClientOriginalExtension();
+    //         $image->move(public_path('images'), $new_name);
+    //         return response()->json([
+    //             'message'   => 'Image Upload Successfully',
+    //             'uploaded_image' => '<img src="/images/'.$new_name.'" class="img-thumbnail" width="300" />',
+    //             'class_name'  => 'alert-success'
+    //         ]);
+    //     }
+    //     else{
+    //         return response()->json([
+    //             'message'   => $validation->errors()->all(),
+    //             'uploaded_image' => '',
+    //             'class_name'  => 'alert-danger'
+    //         ]);
+    //     }
+    // }
 }
 
 

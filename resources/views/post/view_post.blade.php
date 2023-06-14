@@ -1,11 +1,12 @@
-@extends('layout.layout_2')
+@extends('layout.layout_sidebar')
 @section('content')
+{{ Breadcrumbs::render('view_post') }}
 <div class = "card " >
     <div class="card-header">
       <h2>View Post</h2>
     </div>
     <div class="card-body">
-        <form id="upload_form" method="POST" enctype="multipart/form-data">
+        <form action="/view_post/{{$post->id}}" id="upload_form" method="POST" name='images' enctype="multipart/form-data">
           {{ csrf_field() }}
           <div class="card">
             <div class="card-header">
@@ -38,42 +39,16 @@
             @error('comment')
               <span style="color: red;"> {{$message}} </span>
             @enderror
+            <br>
             <label for="formFile" class="form-label">Comment images</label>
             <input class="form-control" type="file" id="formFile" name="images[]" multiple>
           </div>
           <button class="btn btn-primary btn-lg">Save</button>
         </form>
-        <a href="{{route('home')}}" class="btn btn-success float-end btn-lg" title="Back">
-          <i class="fa fa-plus" aria-hidden="true"></i> Back
-        </a>
     </div>
 </div>
 <br>
 
-<div class="alert" id="message" style="display: none"></div>
-
-<script>
-$(document).ready(function(){
-  $('#upload_form').on('submit', function(event){ // 'upload_form' is the id of above form
-    event.preventDefault();
-    $.ajax({
-        url:'/view-post' + $image->id,
-        method:"POST",
-        data:new FormData(this),
-        dataType:'JSON',
-        contentType: false,
-        cache: false,
-        processData: false,
-        success:function(data){
-            $('#message').css('display', 'block');
-            $('#message').html(data.message);
-            $('#message').addClass(data.class_name);
-            // $('#uploaded_image').html(data.uploaded_image);
-        }
-    })
-  });
-});
-</script>
 
   
 @endsection
