@@ -77,7 +77,7 @@
         <div class="sidebar-heading">Web Page</div>
         <div class="list-group list-group-flush">
             <a href="/" class="list-group-item list-group-item-action bg-light">Post</a>
-            <a href="/address" class="list-group-item list-group-item-action bg-light">Address</a>
+            <a href="/all_address" class="list-group-item list-group-item-action bg-light">Address</a>
         </div>
         </div>
         <!-- /#sidebar-wrapper -->

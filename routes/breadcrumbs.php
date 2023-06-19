@@ -31,9 +31,33 @@ Breadcrumbs::for('view_post', function (BreadcrumbTrail $trail) {
     $trail->push('View Post');
 });
 
-// Address
-Breadcrumbs::for('address', function (BreadcrumbTrail $trail) {
-    $trail->push('Address', route('address'));
+// All Address > User Address
+Breadcrumbs::for('user_address', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_address');
+    $trail->push('User Address', route('userAddress'));
+});
+
+// All Address > New Country
+Breadcrumbs::for('new_country', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_address');
+    $trail->push('New Country');
+});
+
+// All Address > New City
+Breadcrumbs::for('new_city', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_address');
+    $trail->push('New City');
+});
+
+// All Address > New District
+Breadcrumbs::for('new_district', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_address');
+    $trail->push('New District');
+});
+
+// All Address
+Breadcrumbs::for('all_address', function (BreadcrumbTrail $trail) {
+    $trail->push('All Address',route('allAddress'));
 });
 
 // Home > Blog > [Category]

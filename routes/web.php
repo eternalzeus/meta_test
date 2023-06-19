@@ -33,6 +33,8 @@ Route::get('/login_page',function(){
 // Blog post related routes
 
 Route::group(['middleware' => ['check_login']], function () {
+	
+	// Post routes
 	Route::get('/', [UserController::class,'home'])->name('home'); // Home
 	Route::get('/create-post',[PostController::class,'getPost'])->name('createPost'); // View create post
 	Route::post('/create-post',[PostController::class,'createPost']);	// Create post
@@ -46,10 +48,18 @@ Route::group(['middleware' => ['check_login']], function () {
 	Route::post('/view_post/{id}',[PostController::class,'comment']); // Update comment
 	Route::delete('/delete-post/{post}',[PostController::class,'deletePost']); // Delete post
 
-	Route::get('/address',[AddressController::class,'country'])->name('address'); // Get all country data
-	Route::post('/fetch-city',[AddressController::class,'fetchCity']);
-	Route::post('/fetch-district',[AddressController::class,'fetchDistrict']);
-
+	// Address routes
+	Route::get('/user_address',[AddressController::class,'userAddress'])->name('userAddress'); // Get all country data
+	Route::post('/fetch-city',[AddressController::class,'fetchCity']); // Ajax city
+	Route::post('/fetch-district',[AddressController::class,'fetchDistrict']); // Ajax district
+	Route::post('/save_address/{user_id}',[AddressController::class,'saveAddress']);
+	Route::get('/new_country',[AddressController::class,'newCountry']);
+	Route::get('/new_city/{country_id}',[AddressController::class,'newCity']);
+	Route::get('/new_district/{city_id}',[AddressController::class,'newDistrict']);
+	Route::post('/new_city/{country_id}',[AddressController::class,'saveNewCity']);
+	Route::post('/new_district/{city_id}',[AddressController::class,'saveNewDistrict']);
+	Route::post('/new_country',[AddressController::class,'saveNewCountry']);
+	Route::get('/all_address',[AddressController::class,'allAddress'])->name('allAddress');
 	// $url = route('editPost', ['id' => ...]);
 
 });

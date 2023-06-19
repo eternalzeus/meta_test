@@ -1,6 +1,5 @@
 @extends('layout.layout_sidebar')
 @section('content')
-{{ Breadcrumbs::render('home') }}
 <br>
     @if ($message = Session::get('error'))
         <div class="alert alert-danger alert-block" >
@@ -14,14 +13,14 @@
     @endif
     <div class="container">
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         <h2>All Posts</h2>
                     </div>
                     <div class="card-body">
-                        <a href="{{route('createPost')}}" class="btn btn-success" title="Add New Student">
-                            <i class="fa fa-plus" aria-hidden="true"></i> Add New
+                        <a href="{{route('createPost')}}" class="btn btn-success" title="Add New Post">
+                            <i class="fa fa-plus" aria-hidden="true"></i> New Post
                         </a>
                         <br/>
                         <br/>
@@ -59,13 +58,13 @@
                                             @endforeach
                                         </td>
                                         <td>
-                                            <a href="/edit_post/{{$post->id}}" title="Edit Student"><button class="btn btn-secondary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
-                                            {{-- <a href="/edit-image/{{$post->id}}" title="Edit Student"><button class="btn btn-warning btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit Image</button></a> --}}
+                                            <a href="/edit_post/{{$post->id}}" title="Edit Post"><button class="btn btn-secondary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
+                                            {{-- <a href="/edit-image/{{$post->id}}" title="Edit Post"><button class="btn btn-warning btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit Image</button></a> --}}
                                             <a href="/view_post/{{$post->id}}" title="View Post"><button class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> View</button></a>
                                             <form method="POST" action="/delete-post/{{$post->id}}" accept-charset="UTF-8" style="display:inline">
                                                 {{ method_field('DELETE') }}
                                                 {{ csrf_field() }}
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Delete Student" onclick="return confirm(&quot;Confirm delete?&quot;)"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Delete Post" onclick="return confirm(&quot;Confirm delete?&quot;)"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
                                             </form>
                                         </td>
                                     </tr>

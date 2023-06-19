@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class District extends Model
+class Address extends Model
 {
-    protected $fillable = ['district_name', 'city_id'];
+    protected $fillable = ['country_id', 'city_id', 'district_id', 'user_address', 'user_id'];
     use HasFactory;
 }

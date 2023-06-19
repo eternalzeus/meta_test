@@ -1,4 +1,4 @@
-@extends('layout.layout_2')
+@extends('layout.layout_sidebar')
 @section('content')
 {{ Breadcrumbs::render('create_post') }}
 <div class = "card " >
@@ -9,7 +9,7 @@
     
     <form action="/create-post" method="POST" id="upload_form" enctype="multipart/form-data">
         @csrf
-        <div class="col-md-4 mb-3">
+        <div class="mb-3">
           <label for="validationTooltip01">Title</label>
           <input type="text" class="form-control" name="title" placeholder="Title">
           @error('title')
