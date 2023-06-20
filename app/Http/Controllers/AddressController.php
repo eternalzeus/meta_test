@@ -15,23 +15,39 @@ class AddressController extends Controller
         return view('address.user_address',compact('counteries'));
     }
 
-    // Ajax City
-    public function fetchCity(Request $request){
-        $data['cities'] = City::where('country_id',$request->country_id)->get(['city_name','id']);
-        if($data['cities'] -> isEmpty()){
+    private function _commonCheck($data, $value)
+    {
+        if($data[$value] -> isEmpty()){
             $data['status'] = 400;
         }
         else $data['status'] = 200;
+        return $data;
+    }
+    //ten ham chung
+    //noi viet
+    //tham so truyen vao
+    // Ajax City
+    public function fetchCity(Request $request){
+        $data['cities'] = City::where('country_id',$request->country_id)->get(['city_name','id']);
+
+        // if($data['cities'] -> isEmpty()){
+        //     $data['status'] = 400;
+        // }
+        // else $data['status'] = 200;
+        // $data = $this->_commonCheck($data, 'cities');
+        $data = City::commonCheck($data, 'cities', 'status');
+
         return response()->json($data);
     }
  
     // Ajax District
     public function fetchDistrict(Request $request){
         $data['districts'] = District::where('city_id',$request->city_id)->get(['district_name','id']);
-        if($data['districts'] -> isEmpty()){
-            $data['status'] = 400;
-        }
-        else $data['status'] = 200;
+        // if($data['districts'] -> isEmpty()){
+        //     $data['status'] = 400;
+        // }
+        // else $data['status'] = 200;
+        $data = City::commonCheck($data, 'districts', 'status');
         return response()->json($data);
     }
 

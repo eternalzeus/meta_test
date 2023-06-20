@@ -48,6 +48,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        var text ='No district available 1';
         $('#country_id').change(function(event) {
             var idCountry = this.value;
             $.ajax({
@@ -68,7 +69,7 @@
                     else {
                         $('#error_city').html('No city available');
                         $('#city_id').html('No city available');
-                        $('#district_id').html('No city available');
+                        $('#district_id').html(text);
                     }
                 }
             })
@@ -90,7 +91,7 @@
                     }
                     else {
                         $('#error_district').html('No district available');
-                        $('#district_id').html('No district available');
+                        $('#district_id').html(text);
                     }
                 }
             })

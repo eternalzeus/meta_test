@@ -9,4 +9,13 @@ class City extends Model
 {
     protected $fillable = ['city_name', 'country_id'];
     use HasFactory;
+    const STASUS = 'status';
+    public static function commonCheck($data, $value, )
+    {
+        if($data[$value] -> isEmpty()){
+            $data[STASUS] = 400;
+        }
+        else $data[STASUS] = 200;
+        return $data;
+    }
 }
