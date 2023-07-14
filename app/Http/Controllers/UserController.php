@@ -76,6 +76,24 @@ class UserController extends Controller
         
     }
 
+    private function getUserNameByComment($userId)
+    {
+        $user = User::find($userId);
+        if ($user) {
+            return $user->name;
+        }
+        return null;
+    }
+    private function getCommentByPost($postId)
+    {
+        $comments = Comment::where('post_id', $postId)->get();
+        // ->pluck('comment')->toArray();
+        $res = '';
+        foreach ($comments as $comment) {
+            $res .= $res . $this->getUserNameByComment($comment->user_id) . ': ' . $comment->comment .  "\n";
+        }
+        return $res;
+    }
     // Home page
     public function home () {
         // dd(Session::all());
@@ -87,22 +105,30 @@ class UserController extends Controller
                 ->select('posts.title as title', 'posts.body as content', 'comments.comment as comment', 'users.name as username', 'posts.id as post_id')
                 ->get();
             $res = [];
-            foreach($data as $value) {
-                if (!empty($res[$value['post_id']] )) {
-                    $res[$value['post_id']] = [
-                        'title' => $value['title'],
-                        'comment' => $res[$value['post_id']]['comment'] .'\n' . $value['username'] .': ' .$value['content'],
-                        'content' => $value['content'],
-                    ];
-                } else {
-                    $res[$value['post_id']] = [
-                        'title' => $value['title'],
-                        'content' => $value['username'] .': ' .$value['content'],
-                        'comment' => $value['title'],
-                    ];
-                }
-                
+            foreach($posts as $post) {
+                $res[$post->id] = [
+                    'post_id' => $post->id,
+                    'title' => $post->title,
+                    'content' => $post->body,
+                    'comment' => $this->getCommentByPost($post->id),
+                ];
             }
+            // foreach($data as $value) {
+            //     if (!empty($res[$value['post_id']] )) {
+            //         $res[$value['post_id']] = [
+            //             'title' => $value['title'],
+            //             'comment' => $res[$value['post_id']]['comment'] .'\n' . $value['username'] .': ' .$value['content'],
+            //             'content' => $value['content'],
+            //         ];
+            //     } else {
+            //         $res[$value['post_id']] = [
+            //             'title' => $value['title'],
+            //             'content' => $value['username'] .': ' .$value['content'],
+            //             'comment' => $value['title'],
+            //         ];
+            //     }
+                
+            // }
             // dd($res);
             // dd($data->toArray());
 
