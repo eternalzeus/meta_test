@@ -1,4 +1,4 @@
-@extends('layout.layout_sidebar')
+@extends('sidebar.sidebar')
 @section('content')
 {{ Breadcrumbs::render('new_country') }}
 <div class = "card " >
@@ -11,16 +11,11 @@
           <div class="mb-3">
             <h6>Country</h6>
             <input type="text" class="form-control" name="new_country" placeholder="New Country">
+            @error('country_name')
+              <span style="color: red;"> {{$message}} </span>
+            @enderror
           </div>
-          <div class="mb-3">
-            <h6>City</h6>
-            <input type="text" class="form-control" name="new_city" placeholder="New City">
-          </div>
-          <div class="mb-3">
-            <h6>District</h6>
-            <input type="text" class="form-control" name="new_district" placeholder="New District">
-          </div>
-          <button class="btn btn-primary">Submit</button>
+          <button class="btn btn-success">Submit</button>
       </form>
     </div>
   </div>

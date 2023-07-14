@@ -7,130 +7,128 @@ use App\Models\Address;
 use App\Models\Country;
 use App\Models\District;
 use Illuminate\Http\Request;
+use App\Http\Requests\NewCityRequest;
+use App\Http\Requests\EditCityRequest;
+use App\Http\Requests\NewCountryRequest;
+use App\Http\Requests\EditCountryRequest;
+use App\Http\Requests\NewDistrictRequest;
+use App\Http\Requests\UserAddressRequest;
+use App\Http\Requests\EditDistrictRequest;
 
 class AddressController extends Controller
 {
+
     public function userAddress(){
-        $counteries = Country::get(['country_name','id']);
-        return view('address.user_address',compact('counteries'));
+        $countries = Country::get(['country_name','id']);
+        return view('address.user_address',compact('countries'));
     }
 
     // Ajax City
     public function fetchCity(Request $request){
         $data['cities'] = City::where('country_id',$request->country_id)->get(['city_name','id']);
-        if($data['cities'] -> isEmpty()){
-            $data['status'] = 400;
-        }
-        else $data['status'] = 200;
+        $data = Address::checkAjax($data, 'cities');
         return response()->json($data);
     }
  
     // Ajax District
     public function fetchDistrict(Request $request){
         $data['districts'] = District::where('city_id',$request->city_id)->get(['district_name','id']);
-        if($data['districts'] -> isEmpty()){
-            $data['status'] = 400;
-        }
-        else $data['status'] = 200;
+        $data = Address::checkAjax($data, 'districts');
         return response()->json($data);
     }
 
-    public function saveAddress(Request $request, $user_id){
-        $rules = [
-            'country_id' => 'required',
-            'city_id' => 'required',
-            'district_id' => 'required',
-            'user_address' => 'required',
-        ];
-        $message = [
-            'country_id' => 'Country is required',
-            'city_id' => 'City is required',
-            'district_id' => 'District is required',
-            'user_address' => 'Address is required',
-        ];
-        $address = $request->validate($rules, $message);
-        $address['country_id'] = $request->country_id; 
-        $address['city_id'] = $request->city_id;
-        $address['district_id'] = $request->district_id;
-        $address['user_id'] = $user_id;
-        Address::create($address);
-        return back();
+    public function saveAddress(UserAddressRequest $request, $user_id){
+        Address::create($request->validated()+[
+            'user_id' => $user_id
+        ]);
+        return redirect(route('allAddress'));
     }
 
     public function newCountry(){
         return view('address.new_country');
     }
 
-    public function newCity($country_id){
-        $country = Country::find($country_id);
-        return view('address.new_city',compact('country'));
+    public function newCity(){
+        $countries = Country::all();
+        return view('address.new_city',compact('countries'));
     }
 
-    public function newDistrict($city_id){
-        $city = City::find($city_id);
-        return view('address.new_district',compact('city'));
+    public function newDistrict(){
+        $countries = Country::all();
+        $cities = City::all();
+        return view('address.new_district',compact('countries','cities'));
     }
 
-    public function saveNewCountry(Request $request){
-        $rules = [
-            'new_country' => 'required',
-            'new_city' => 'required',
-            'new_district' => 'required'
-        ];
-        $message = [
-            'new_country'=>'Country is required',
-            'new_city'=>'City is required',
-            'new_district'=>'District is required',
-        ];
-        $address = $request->validate($rules, $message);
-        $new_country['country_name'] = $request->new_country;
-        Country::create($new_country);
-        $new_city['city_name'] = $request->new_city;
-        $new_city['country_id'] = Country::find(Country::max('id'))->id;
-        City::create($new_city);
-        $new_district['district_name'] = $request->new_district;
-        $new_district['city_id'] = City::find(City::max('id'))->id;
-        District::create($new_district);
-        return redirect(route('allAddress'));
+    public function saveNewCountry(NewCountryRequest $request){
+        Country::create($request->validated());
+        return redirect(route('allCountry'));
     }
 
-    public function saveNewCity(Request $request, $country_id){
-        $rules = [
-            'new_city' => 'required',
-            'new_district' => 'required'
-        ];
-        $message = [
-            'new_city'=>'City is required',
-            'new_district'=>'District is required',
-        ];
-        $address = $request->validate($rules, $message);
-        $new_city['city_name'] = $request->new_city;
-        $new_city['country_id'] = $country_id;
-        City::create($new_city);
-        $new_district['district_name'] = $request->new_district;
-        $new_district['city_id'] = City::find(City::max('id'))->id;
-        District::create($new_district);
-        return redirect(route('allAddress'));
+    public function saveNewCity(NewCityRequest $request){
+        City::create($request->validated());
+        return redirect(route('allCity'));
     }
 
-    public function saveNewDistrict(Request $request, $city_id){
-        $rules = [
-            'new_district' => 'required'
-        ];
-        $message = [
-            'new_district'=>'District is required',
-        ];
-        $address = $request->validate($rules, $message);
-        $new_district['district_name'] = $request->new_district;
-        $new_district['city_id'] = $city_id;
-        District::create($new_district);
-        return redirect(route('allAddress'));
+    public function saveNewDistrict(NewDistrictRequest $request){
+        District::create($request->validated());
+        return redirect(route('allDistrict'));
     }
     public function allAddress(){
-        $countries = Country::all(); // get() ~ SELECT, where() ~ WHERE in querry
+        $countries = Country::all();
         $cities = City::all();
         $districts = District::all();
-        return view('address.all_address',compact('countries','cities','districts'));
+        $user_addresses = Address::all();
+        return view('address.all_address',compact('countries','cities','districts','user_addresses'));
     }
-
+    public function allDistrict(){
+        $countries = Country::all();
+        $cities = City::all();
+        $districts = District::all();
+        return view('address.all_district',compact('countries','cities','districts'));
+    }
+    public function allCity(){
+        $countries = Country::all();
+        $cities = City::all();
+        return view('address.all_city',compact('countries','cities'));
+    }
+    public function allCountry(){
+        $countries = Country::all();
+        return view('address.all_country',compact('countries'));
+    }
+    public function editCountry($country_id) {
+        $country = Country::find($country_id);
+        return view('address.edit_country',compact('country')); 
+    }
+    public function saveEditCountry(Country $country, EditCountryRequest $request) {
+        $country->update($request->validated());
+        return redirect(route('allCountry'));
+    }
+    public function deleteCountry(Country $country){    
+        $country->delete();
+        return back(); 
+    }
+    public function editCity($city_id) {
+        $city = City::find($city_id);
+        return view('address.edit_city',compact('city')); 
+    }
+    public function saveEditCity(City $city, EditCityRequest $request) {
+        $city->update($request->validated());
+        return redirect(route('allCity'));
+    }
+    public function deleteCity(City $city){    
+        $city->delete();
+        return back(); 
+    }
+    public function editDistrict($district_id) {
+        $district = District::find($district_id);
+        return view('address.edit_district',compact('district')); 
+    }
+    public function saveEditDistrict(district $district, EditDistrictRequest $request) {
+        $district->update($request->validated());
+        return redirect(route('allDistrict'));
+    }
+    public function deleteDistrict(District $district){    
+        $district->delete();
+        return back(); 
+    }
 }

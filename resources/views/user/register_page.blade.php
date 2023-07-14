@@ -1,4 +1,4 @@
-@extends('layout.layout_1')
+@extends('layout.layout_user')
     @section('title','Login')
     @section('content')
     <div class = "container">

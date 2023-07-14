@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use App\Models\Post;
 use App\Models\Image;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\NewPostRequest;
 use Illuminate\Support\Facades\Storage;
-use Validator;
+use App\Http\Requests\UpdatePostRequest;
+use App\Http\Requests\CommentPostRequest;
+use App\Http\Requests\UpdateImageRequest;
 
 class PostController extends Controller
 {
@@ -36,7 +40,6 @@ class PostController extends Controller
         if(auth()->user()->id === $post['user_id']){ // If you are the author of this Post
             $names = Image::select('name')->where('imageable_id',$post->id)->get();
             foreach($names as $name){
-                // dd($name->name);
                 Storage::disk('public')->delete($name->name);
             }
             DB::table('images')->where('imageable_id',$post->id)->delete();
@@ -50,60 +53,40 @@ class PostController extends Controller
     }
     // View post
     public function showViewScreen($postId){
-        // $images = Image::all();
         $post = Post::find($postId);
         $images = $post->images;
-        return view('post.view_post',compact('post','images')); // 'post' represent for $post in blade view
+        return view('post.view_post',compact('post','images'));
     }
 
     // Edit image
     public function showEditImage($postId){
         $images = Image::all();
         $post = Post::find($postId);
-        return view('post.edit-image',compact('post','images')); // 'post' represent for $post in blade view
+        return view('post.edit-image',compact('post','images'));
     }
 
     // Edit Post Screen
     public function showEditScreen(Post $post, $Id) {
         $post = Post::find($Id);
         $images = $post->images;
-        if(auth()->user()->id !== $post['user_id']){    // If you are the author of this Post
+        if(auth()->user()->id !== $post['user_id']){
             return back()->with ('error', 'Your are not the author of this post');
         }
         else{
             return view('post.edit_post',compact('post','images')); 
         }
-        
     }
 
     // Comment
-    public function comment(Post $post, Request $request, $Id){
-        $rules = [
-            'comment' => 'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-        ];
-        $message = [
-            'comment.required'=>'Comment is required',
-            'images.*.image' => 'The input file must be images',
-            'images.*.mimes' => 'The image type must be jpeg,png,jpg,gif',
-            'images.*.max' => "The size of the file is too big (max:2mb)"
-        ];
-        $incomingFields = $request->validate($rules, $message);
-        $incomingFields['post_id'] = $Id;
-        $incomingFields['user_id'] = auth()->id();
-        $incomingFields['comment'] = strip_tags($incomingFields['comment']);
-        Comment::create($incomingFields);
+    public function comment(Post $post, CommentPostRequest $request, $Id){
+        Comment::create($request->validated()+[
+            'post_id' => $Id,
+            'user_id' => auth()->id()
+        ]);
         if($files = $request->file('images')){
             foreach ($files as $file){
-                $image_name = md5(rand(100,1000));      
-                $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
-                $image_full_name = $image_name.'.'.$ext;
-                Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
-
+                $image = Image::createImage($file);
                 $comment = Comment::find(Comment::max('id'));
-                $image = new Image;
-                $image->path = Storage::url($image_full_name);
-                $image->name = $image_full_name;
                 $comment->images()->save($image);
             }
         }
@@ -113,66 +96,28 @@ class PostController extends Controller
 
 
     // Updating Post
-    public function actuallyUpdatePost(Post $post, Request $request) {
-        if(auth()->user()->id !== $post['user_id']){    // If you are not the author of this Post
-            return redirect('/');
-        }
-        $rules = [
-            'title' => 'required',
-            'body' => 'required'
-        ];
-        $message = [
-            'title.required'=>'Title is required',
-            'body.required' => 'Content is required'
-        ];
-        $incomingFields = $request->validate($rules, $message);
-        $incomingFields['title'] = strip_tags($incomingFields['title']); // strip_tags to clean tag
-        $incomingFields['body'] = strip_tags($incomingFields['body']);
-        $post->update($incomingFields);
+    public function actuallyUpdatePost(Post $post, UpdatePostRequest $request) {
+        $post->update($request->validated());
         return redirect('/');
     }
 
     // Create new Post
-    public function createPost(Request $request){
-        $rules = [
-            'title' => 'required',
-            'body' => 'required',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-        ];
-        $message = [
-            'title.required'=>'Title is required',
-            'body.required' => 'Content is required',
-            'images.*.image' => 'The input file must be images',
-            'images.*.mimes' => 'The image type must be jpeg,png,jpg,gif',
-            'images.*.max' => "The size of the file is too big (max:2 MB)"
-        ];
-        $incomingFields = $request->validate($rules, $message);
-        $incomingFields['title'] = strip_tags($incomingFields['title']); 
-        $incomingFields['body'] = strip_tags($incomingFields['body']);
-        $incomingFields['user_id'] = auth()->id(); // Who is creating post
-        Post::create($incomingFields);
+    public function createPost(NewPostRequest $request){
+        Post::create($request->validated()+[
+            'user_id' => auth()->id()
+        ]);
         if($files = $request->file('images')){
             foreach ($files as $file){
-                $image_name = md5(rand(100,1000));
-                $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
-                $image_full_name = $image_name.'.'.$ext;
-                Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
+                $image = Image::createImage($file);
                 $post = Post::find(Post::max('id'));
-                $image = new Image;
-                $image->path = Storage::url($image_full_name);
-                $image->name = $image_full_name;
                 $post->images()->save($image);
-                // Image::create($imageFields);
             }
         }
-        // $image = DB::table('posts')->where('id',$post->id)->first();
-        // $images = explode('|', $image->image);
         return redirect('/')->with('success','Post created successfully');
     }
 
     // Delete Image
     public function deleteImage(Image $image){
-        // dd($image->name);
         Storage::disk('public')->delete($image->name);
         $image->delete();
         return back();
@@ -182,66 +127,31 @@ class PostController extends Controller
     public function addImage(Request $request, $Id){ // Id is taken from Route '/add-image/{id}'    
     if($files = $request->file('images')){
         foreach ($files as $file){
-            $image_name = md5(rand(100,1000));
-            $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
-            $image_full_name = $image_name.'.'.$ext;
-            Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
+            $image = Image::createImage($file);
             $post = Post::find($Id);
-            $image = new Image;
-            $image->path = Storage::url($image_full_name);
-            $image->name = $image_full_name;
             $post->images()->save($image);
-            // Image::create($imageFields);
         }
     }
         return redirect('/');
     }
+
     // Update image
-    public function editImage(Request $request, $image_id) {
-        $validation = Validator::make($request->all(), [
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
-           ]);
-           if($validation->passes()){
-                $image = Image::find($image_id);
-                // dd($image->name);
-                Storage::disk('public')->delete($image->name);
-                if($file = $request->file('image')){
-                    $image_name = md5(rand(100,1000));
-                    $ext = strtolower($file->getClientOriginalExtension()); // Lấy đuôi cuối của file .png
-                    $image_full_name = $image_name.'.'.$ext;
-                    Storage::disk('public')->put( $image_full_name, file_get_contents($file) );
-                    $image->path = Storage::url($image_full_name);
-                    $image->name = $image_full_name;
-                    $image->update();
-                    return redirect('/');
-                }
-            }
-        else return back();
-        // return respond()->json;
+    public function editImage(UpdateImageRequest $request, $image_id) {
+        $request->validated();
+        if($file = $request->file('image')){
+            Image::updateImage($file,$image_id)->update();
+            return redirect('/');
+        }
     }
 
-    // function action(Request $request){
-    //     $validation = Validator::make($request->all(), [
-    //         'select_file' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-    //     ]);
-    //     if($validation->passes()){
-    //         $image = $request->file('select_file');
-    //         $new_name = rand() . '.' . $image->getClientOriginalExtension();
-    //         $image->move(public_path('images'), $new_name);
-    //         return response()->json([
-    //             'message'   => 'Image Upload Successfully',
-    //             'uploaded_image' => '<img src="/images/'.$new_name.'" class="img-thumbnail" width="300" />',
-    //             'class_name'  => 'alert-success'
-    //         ]);
-    //     }
-    //     else{
-    //         return response()->json([
-    //             'message'   => $validation->errors()->all(),
-    //             'uploaded_image' => '',
-    //             'class_name'  => 'alert-danger'
-    //         ]);
-    //     }
-    // }
+    // Ajax post search
+    function postSearch(Request $request){
+        if($request->ajax()){
+            $query = $request->get('query');
+            $data = Post::searchAjax($query);
+            return response()->json($data);
+        }
+    }
 }
 
 

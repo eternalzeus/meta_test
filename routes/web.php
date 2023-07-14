@@ -47,6 +47,7 @@ Route::group(['middleware' => ['check_login']], function () {
 	Route::put('/update-image/{image_id}',[PostController::class,'editImage'])->name('Image.update'); // Update image
 	Route::post('/view_post/{id}',[PostController::class,'comment']); // Update comment
 	Route::delete('/delete-post/{post}',[PostController::class,'deletePost']); // Delete post
+	Route::get('/post_search', [PostController::class,'postSearch'])->name('postSearch'); // Ajax search
 
 	// Address routes
 	Route::get('/user_address',[AddressController::class,'userAddress'])->name('userAddress'); // Get all country data
@@ -54,12 +55,24 @@ Route::group(['middleware' => ['check_login']], function () {
 	Route::post('/fetch-district',[AddressController::class,'fetchDistrict']); // Ajax district
 	Route::post('/save_address/{user_id}',[AddressController::class,'saveAddress']);
 	Route::get('/new_country',[AddressController::class,'newCountry']);
-	Route::get('/new_city/{country_id}',[AddressController::class,'newCity']);
-	Route::get('/new_district/{city_id}',[AddressController::class,'newDistrict']);
-	Route::post('/new_city/{country_id}',[AddressController::class,'saveNewCity']);
-	Route::post('/new_district/{city_id}',[AddressController::class,'saveNewDistrict']);
+	Route::get('/new_city',[AddressController::class,'newCity']);
+	Route::get('/new_district',[AddressController::class,'newDistrict']);
 	Route::post('/new_country',[AddressController::class,'saveNewCountry']);
+	Route::post('/new_city',[AddressController::class,'saveNewCity']);
+	Route::post('/new_district',[AddressController::class,'saveNewDistrict']);
 	Route::get('/all_address',[AddressController::class,'allAddress'])->name('allAddress');
+	Route::get('/all_country',[AddressController::class,'allCountry'])->name('allCountry');
+	Route::get('/all_city',[AddressController::class,'allCity'])->name('allCity');
+	Route::get('/all_district',[AddressController::class,'allDistrict'])->name('allDistrict');
+	Route::get('/edit_country/{country_id}',[AddressController::class,'editCountry']);
+	Route::put('/edit_country/{country}',[AddressController::class,'saveEditCountry']);
+	Route::delete('/delete_country/{country}',[AddressController::class,'deleteCountry']); // Delete country
+	Route::get('/edit_city/{city_id}',[AddressController::class,'editCity']);
+	Route::put('/edit_city/{city}',[AddressController::class,'saveEditCity']);
+	Route::delete('/delete_city/{city}',[AddressController::class,'deleteCity']); // Delete city
+	Route::get('/edit_district/{district_id}',[AddressController::class,'editDistrict']);
+	Route::put('/edit_district/{district}',[AddressController::class,'saveEditDistrict']);
+	Route::delete('/delete_district/{district}',[AddressController::class,'deleteDistrict']); // Delete district
 	// $url = route('editPost', ['id' => ...]);
 
 });

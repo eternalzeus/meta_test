@@ -1,6 +1,7 @@
-@extends('layout.layout_sidebar')
+@extends('sidebar.sidebar')
 @section('content')
 {{ Breadcrumbs::render('user_address') }}
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container mt-4">
     <div class="row justify-content-center">
     <div class="col-md-12">
@@ -10,7 +11,7 @@
             <div class="form-group mb-3">
                 <select id="country_id" class="form-control" name ="country_id">
                 <option value="">Select Country</option>
-                @foreach($counteries as $data)
+                @foreach($countries as $data)
                     <option value="{{$data->id}}">{{$data->country_name}}</option>
                 @endforeach
                 </select>
@@ -46,55 +47,7 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#country_id').change(function(event) {
-            var idCountry = this.value;
-            $.ajax({
-                url: "/fetch-city",
-                type: 'POST',
-                dataType: 'json',
-                data: {country_id: idCountry, _token: "{{ csrf_token() }}"},
-                success:function(response){
-                    if(response.status == 200){
-                        console.log(response);
-                        $('#city_id').html('<option value="">Select city</option>');
-                        $.each(response.cities,function(index, val){
-                        $('#city_id').append('<option value="'+val.id+'"> '+val.city_name+' </option>')
-                        });
-                        $('#district_id').html('<option value="">Select district</option>');
-                        $('#error_city').html('');
-                    }
-                    else {
-                        $('#error_city').html('No city available');
-                        $('#city_id').html('No city available');
-                        $('#district_id').html('No city available');
-                    }
-                }
-            })
-        });
-        $('#city_id').change(function(event) {
-            var idCity  = this.value;
-            $('#district_id').html('');
-            $.ajax({
-                url: "/fetch-district",
-                type: 'POST',
-                dataType: 'json',
-                data: {city_id: idCity, _token:"{{ csrf_token() }}" },
-                success:function(response){
-                    if(response.status == 200){
-                        $('#district_id').html('<option value="">Select district</option>');
-                        $.each(response.districts,function(index, val){
-                        $('#district_id').append('<option value="'+val.id+'"> '+val.district_name+' </option>')
-                        });
-                    }
-                    else {
-                        $('#error_district').html('No district available');
-                        $('#district_id').html('No district available');
-                    }
-                }
-            })
-        });
-    });
-</script>
 @endsection
+
+<script src="{{asset('assets/js/jquerry_address.js')}}" type="text/javascript"></script>
+<script type="text/javascript" src="{{url('js/user_address.js')}}"></script>

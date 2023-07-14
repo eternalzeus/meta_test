@@ -1,4 +1,4 @@
-@extends('layout.layout_sidebar')
+@extends('sidebar.sidebar')
 @section('content')
 {{ Breadcrumbs::render('create_post') }}
 <div class = "card " >

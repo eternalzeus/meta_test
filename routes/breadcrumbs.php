@@ -37,21 +37,36 @@ Breadcrumbs::for('user_address', function (BreadcrumbTrail $trail) {
     $trail->push('User Address', route('userAddress'));
 });
 
-// All Address > New Country
+// All Country
+Breadcrumbs::for('all_country', function (BreadcrumbTrail $trail) {
+    $trail->push('All Country', route('allCountry'));
+});
+
+// All City
+Breadcrumbs::for('all_city', function (BreadcrumbTrail $trail) {
+    $trail->push('All City', route('allCity'));
+});
+
+// All District
+Breadcrumbs::for('all_district', function (BreadcrumbTrail $trail) {
+    $trail->push('All District', route('allDistrict'));
+});
+
+// All Country > New Country
 Breadcrumbs::for('new_country', function (BreadcrumbTrail $trail) {
-    $trail->parent('all_address');
+    $trail->parent('all_country');
     $trail->push('New Country');
 });
 
-// All Address > New City
+// All City > New City
 Breadcrumbs::for('new_city', function (BreadcrumbTrail $trail) {
-    $trail->parent('all_address');
+    $trail->parent('all_city');
     $trail->push('New City');
 });
 
-// All Address > New District
+// All District > New District
 Breadcrumbs::for('new_district', function (BreadcrumbTrail $trail) {
-    $trail->parent('all_address');
+    $trail->parent('all_district');
     $trail->push('New District');
 });
 
@@ -64,4 +79,25 @@ Breadcrumbs::for('all_address', function (BreadcrumbTrail $trail) {
 Breadcrumbs::for('category', function (BreadcrumbTrail $trail, $category) {
     $trail->parent('blog');
     $trail->push($category->title, route('category', $category));
+});
+
+// Edit Country
+
+Breadcrumbs::for('edit_country', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_country');
+    $trail->push('Edit Country');
+});
+
+// Edit City
+
+Breadcrumbs::for('edit_city', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_city');
+    $trail->push('Edit City');
+});
+
+// Edit District
+
+Breadcrumbs::for('edit_district', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_district');
+    $trail->push('Edit District');
 });

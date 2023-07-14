@@ -16,6 +16,7 @@ return new class extends Migration
             $table->morphs('imageable');
             $table->text('path');
             $table->text('name');
+            $table->text('code');
             $table->timestamps();
         });
     }

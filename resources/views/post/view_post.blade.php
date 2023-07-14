@@ -1,4 +1,4 @@
-@extends('layout.layout_sidebar')
+@extends('sidebar.sidebar')
 @section('content')
 {{ Breadcrumbs::render('view_post') }}
 <div class = "card " >
@@ -34,14 +34,20 @@
           @endforeach
           <div class="mb-3">
             <br>
+            <hr class="hr hr-blurry" />
             <h4>Your Comment</h4>
-            <textarea class="form-control" name="comment" placeholder="Comment"></textarea>
+            <br>
+            <h6>Comment</h6>
+            <textarea id="editor" class="form-control" name="comment" placeholder="Comment"></textarea>
             @error('comment')
               <span style="color: red;"> {{$message}} </span>
             @enderror
             <br>
-            <label for="formFile" class="form-label">Comment images</label>
+            <h6>Comment Images</h6>
             <input class="form-control" type="file" id="formFile" name="images[]" multiple>
+            @error('images.*')
+              <span style="color: red;"> {{$message}} </span>
+            @enderror
           </div>
           <button class="btn btn-primary btn-lg">Save</button>
         </form>
@@ -49,6 +55,10 @@
 </div>
 <br>
 
+<script type="text/javascript" src="{{url('js/ckeditor.js')}}"></script>
 
-  
 @endsection
+
+<script src="{{asset('assets/ckeditor5/build/ckeditor.js')}}" type="text/javascript"></script>
+
+

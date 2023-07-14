@@ -1,4 +1,4 @@
-@extends('layout.layout_sidebar')
+@extends('sidebar.sidebar')
 @section('content')
 {{ Breadcrumbs::render('edit_post') }}
 <div class = "card " >
@@ -11,7 +11,7 @@
             @method('PUT')  
             <div class="mb-3">
             <label for="validationTooltip01">Title</label>
-            <input type="text" class="form-control" name="title" value={{$post->title}}>
+            <textarea class="form-control" name="title" >{{$post->title}}</textarea>
             @error('title')
                 <span style="color: red;"> {{$message}} </span>
             @enderror
@@ -22,7 +22,6 @@
                 @error('body')
                     <span style="color: red;"> {{$message}} </span>
                 @enderror
-
             <br>
             <button class="btn btn-primary btn-lg">Update</button>  
         </form>
@@ -56,6 +55,9 @@
                                                         <div class="mb-3">
                                                             <label for="formFile" class="form-label">Update images</label>
                                                             <input class="form-control" type="file" id="formFile" name="image">
+                                                            @error('image')
+                                                                <span style="color: red;"> {{$message}} </span>
+                                                            @enderror
                                                         </div>
                                                         <button type="submit" class="btn btn-primary" >Update</button>
                                                     </form>
@@ -85,30 +87,6 @@
             </div>
         </div>
     </div>
-
 </div>
-{{-- <span id="uploaded_image"></span>
-<script>
-    $(document).ready(function(){
-        $('#upload_form').on('submit', function(event){
-            event.preventDefault();
-            $.ajax({
-                url:'/update-image/' + $image->id,
-                method:"POST",
-                data:new FormData(this),
-                dataType:'JSON',
-                contentType: false,
-                cache: false,
-                processData: false,
-                success:function(data){
-                    $('#message').css('display', 'block');
-                    $('#message').html(data.message);
-                    $('#message').addClass(data.class_name);
-                    $('#uploaded_image').html(data.uploaded_image);
-                }
-            })
-        });
-    });
-</script> --}}
 
 @endsection
