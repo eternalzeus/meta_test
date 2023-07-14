@@ -84,9 +84,26 @@ class UserController extends Controller
             $posts = Post::all(); // get() ~ SELECT, where() ~ WHERE in querry
             $data = Post::join('comments', 'comments.post_id', '=', 'posts.id')
                 ->join('users', 'comments.user_id', '=', 'users.id')
-                ->select('posts.title as title', 'posts.body as content', 'comments.comment as comment')
+                ->select('posts.title as title', 'posts.body as content', 'comments.comment as comment', 'users.name as username', 'posts.id as post_id')
                 ->get();
-
+            $res = [];
+            foreach($data as $value) {
+                if (!empty($res[$value['post_id']] )) {
+                    $res[$value['post_id']] = [
+                        'title' => $value['title'];
+                        'comment' => $res[$value['post_id']]['comment'] .'\n' .$value['comment'];
+                        'content' => $value['content'];
+                    ];
+                } else {
+                    $res[$value['post_id']] = [
+                        'title' => $value['title'];
+                        'content' => $value['content'];
+                        'comment' => $value['title'];
+                    ];
+                }
+                
+            }
+            dd($res);
             dd($data->toArray());
 
             // $comments = Comment::all();
@@ -97,4 +114,18 @@ class UserController extends Controller
         // $posts = Post::where('user_id', auth()->id())->get(); 
         return view('post.home',compact('posts','comments','users','images'));
     }
+    // @foreach($comments as $comment)
+    //     @if ($post->id==$comment->post_id)
+    //         @foreach ($users as $user)                                                 
+    //                 @if ($comment->user_id==$user->id)
+    //                     Comment of {{$user->name}}:{!! $comment->comment !!}
+    //                     {{-- {!! nl2br(e($comment->comment)) !!} --}}
+    //                     @foreach($comment->images as $image)
+    //                     <img src="{{URL::to($image->path)}}" style="height:50px; width:50px" alt="">
+    //                     @endforeach
+    //                 @endif
+    //             <br>
+    //         @endforeach
+    //     @endif
+    // @endforeach
 }
