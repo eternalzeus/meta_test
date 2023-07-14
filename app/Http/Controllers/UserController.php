@@ -82,9 +82,16 @@ class UserController extends Controller
         // $posts = [];
         if(auth()->check()){
             $posts = Post::all(); // get() ~ SELECT, where() ~ WHERE in querry
-            $comments = Comment::all();
-            $users = User::all();
-            $images = Image::all();
+            $data = Post::join('comments', 'comments.post_id', '=', 'posts.id')
+                ->join('users', 'comments.user_id', '=', 'users.id')
+                ->select('posts.title as title', 'posts.body as content', 'comments.comment as comment')
+                ->get();
+
+            dd($data->toArray());
+
+            // $comments = Comment::all();
+            // $users = User::all();
+            // $images = Image::all();
             // $posts = auth()->user()->posts()->latest()->get();   // Sort all posts by date
         }
         // $posts = Post::where('user_id', auth()->id())->get(); 
