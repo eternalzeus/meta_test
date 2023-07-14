@@ -32,7 +32,8 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>Index</th>
+                                        <th>Post id</th>
                                         <th>Title</th>
                                         <th>Content</th>                           
                                         <th>Comment</th>                         
@@ -40,27 +41,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($posts as $index => $post)
+                                    @foreach($res as $postId => $post)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
+                                            <td></td>
+>                                           <td>{{ $postId}}</td>
                                             <td>{{ $post->title }}</td>
-                                            <td>{{ $post->body }}</td>
-                                            <td>
-                                                @foreach($comments as $comment)
-                                                    @if ($post->id==$comment->post_id)
-                                                        @foreach ($users as $user)                                                 
-                                                                @if ($comment->user_id==$user->id)
-                                                                    Comment of {{$user->name}}:{!! $comment->comment !!}
-                                                                    {{-- {!! nl2br(e($comment->comment)) !!} --}}
-                                                                    @foreach($comment->images as $image)
-                                                                    <img src="{{URL::to($image->path)}}" style="height:50px; width:50px" alt="">
-                                                                    @endforeach
-                                                                @endif
-                                                            <br>
-                                                        @endforeach
-                                                    @endif
-                                                @endforeach
-                                            </td>
+                                            <td>{{ $post->content }}</td>
+                                            <td>{{ $post->comment }}</td>
                                             <td>
                                                 <a href="/edit_post/{{$post->id}}" title="Edit Post"><button class="btn btn-secondary btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></a>
                                                 {{-- <a href="/edit-image/{{$post->id}}" title="Edit Post"><button class="btn btn-warning btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit Image</button></a> --}}

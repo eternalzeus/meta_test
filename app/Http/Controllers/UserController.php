@@ -90,21 +90,21 @@ class UserController extends Controller
             foreach($data as $value) {
                 if (!empty($res[$value['post_id']] )) {
                     $res[$value['post_id']] = [
-                        'title' => $value['title'];
-                        'comment' => $res[$value['post_id']]['comment'] .'\n' .$value['comment'];
-                        'content' => $value['content'];
+                        'title' => $value['title'],
+                        'comment' => $res[$value['post_id']]['comment'] .'\n' . $value['username'] .': ' .$value['content'],
+                        'content' => $value['content'],
                     ];
                 } else {
                     $res[$value['post_id']] = [
-                        'title' => $value['title'];
-                        'content' => $value['content'];
-                        'comment' => $value['title'];
+                        'title' => $value['title'],
+                        'content' => $value['username'] .': ' .$value['content'],
+                        'comment' => $value['title'],
                     ];
                 }
                 
             }
-            dd($res);
-            dd($data->toArray());
+            // dd($res);
+            // dd($data->toArray());
 
             // $comments = Comment::all();
             // $users = User::all();
@@ -112,7 +112,7 @@ class UserController extends Controller
             // $posts = auth()->user()->posts()->latest()->get();   // Sort all posts by date
         }
         // $posts = Post::where('user_id', auth()->id())->get(); 
-        return view('post.home',compact('posts','comments','users','images'));
+        return view('post.home',compact('res'));
     }
     // @foreach($comments as $comment)
     //     @if ($post->id==$comment->post_id)
