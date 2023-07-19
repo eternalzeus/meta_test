@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Validator;
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Image;
 use App\Models\Comment;
 use Illuminate\Http\Request;
@@ -143,14 +144,69 @@ class PostController extends Controller
             return redirect('/');
         }
     }
-
-    // Ajax post search
+    
     function postSearch(Request $request){
-        if($request->ajax()){
-            $query = $request->get('query');
-            $data = Post::searchAjax($query);
-            return response()->json($data);
+        // $total_row = $posts->count();
+        // dd($result->toArray());
+        // $res = [];
+        $posts = Post::postSearch($request);
+        $res = Post::fullPostArray($posts);
+        // foreach($posts as $post) {
+        //     $res[] = [
+        //         'post_id' => $post->id,
+        //         'title' => $post->title,
+        //         'content' => $post->body,
+        //         'comment' => $this->getCommentByPost($post->id),
+        //     ];
+        // }
+        return view('post.home',compact('res'));
+    }
+
+    // Home page
+    public function home () {
+        if(auth()->check()){
+            $posts = Post::all();
+            // $data = Post::join('comments', 'comments.post_id', '=', 'posts.id')
+            //     ->join('users', 'comments.user_id', '=', 'users.id')
+            //     ->rightjoin('posts as p', 'p.id', '=', 'comments.post_id')
+            //     ->select('p.title as title', 'p.body as content', 'comments.comment as comment', 'users.name as username', 'p.id as post_id')
+            //     // ->paginate(2);
+            //     ->get();
+
+            $res = Post::fullPostArray($posts);
+            // foreach($posts as $post) {
+            //     $res[] = [
+            //         'post_id' => $post->id,
+            //         'title' => $post->title,
+            //         'content' => $post->body,
+            //         'comment' => $this->getCommentByPost($post->id),
+            //     ];
+            // }
+            // dd($res[0]['comment'][0]['comment_content']);
+
+            // dd($res);
+            // foreach($data as $value) {
+            //     if (!empty($res[$value['post_id']] )) {
+            //         $res[$value['post_id']] = [
+            //             'title' => $value['title'],
+            //             'comment' => $res[$value['post_id']]['comment'] .'\n' . $value['username'] .': ' .$value['content'],
+            //             'content' => $value['content'],
+            //         ];
+            //     } else {
+            //         $res[$value['post_id']] = [
+            //             'title' => $value['title'],
+            //             'content' => $value['username'] .': ' .$value['content'],
+            //             'comment' => $value['title'],
+            //         ];
+            //     }
+                
+            // }
+            // dd($res);
+            // dd($data->toArray());
+
         }
+    
+        return view('post.home',compact('res'));
     }
 }
 

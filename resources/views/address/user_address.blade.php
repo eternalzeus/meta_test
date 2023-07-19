@@ -13,7 +13,7 @@
                 <option value="">Select Country</option>
                 @foreach($countries as $data)
                     <option value="{{$data->id}}">{{$data->country_name}}</option>
-                @endforeach
+                @endforeach 
                 </select>
                 @error('country_id')
                     <span style="color: red;"> {{$message}} </span>
