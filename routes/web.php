@@ -29,13 +29,14 @@ Route::get('/register_page',function(){
 Route::get('/login_page',function(){
     return view(view:'user.login_page');
 });
+Route::get('/',[UserController::class,'userHome']);
 
 // Blog post related routes
 
 Route::group(['middleware' => ['check_login']], function () {
 	
 	// Post routes
-	Route::get('/', [PostController::class,'home'])->name('home'); // Home
+	Route::get('/home', [PostController::class,'home'])->name('home'); // Home
 	Route::get('/create-post',[PostController::class,'getPost'])->name('createPost'); // View create post
 	Route::post('/create-post',[PostController::class,'createPost']);	// Create post
 	Route::get('/edit_post/{id}',[PostController::class,'showEditScreen'])->name('editPost'); // View edit post

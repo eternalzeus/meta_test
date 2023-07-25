@@ -8,67 +8,34 @@ use App\Models\Image;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 
 class UserController extends Controller
 {
     private function test(){
     }
     // Users new register
-    public function register(Request $request){
-        $rules = [
-            'name' => ['required', 'min:3', 'max:10', Rule::unique('users', 'name')],
-            'email' => ['required', 'email', Rule::unique('users', 'email')],
-            'password' => ['required', 'min:6', 'max:200']
-        ];
-
-        $message = [
-            'name.required'=>'User Name is required',
-            'name.min'=>'User Name must has more than :min characters',
-            'name.max'=>'User Name must has less than :max characters',
-            'name.unique'=>'User Name has been taken',
-            'email.required'=>'Email Address is required',
-            'email.email'=>'Please enter a valid email',
-            'email.unique'=>'The email has been registered before',
-            'password.required'=>'Password is required',
-            'password.min'=>'Password must has more than :min characters',
-            'password.max'=>'Password must has less than :max characters'
-        ];
-
-        /* $message = [
-            'required' => 'Trường :attribute cần được nhập'
-        ]; */
-
-        $incomingFields = $request->validate($rules, $message);
-            
-            // Nếu k validate dc thì sẽ redirect về request trước
-    
-        $incomingFields['password'] = bcrypt($incomingFields['password']); 
-        $user = User::create($incomingFields);
+    public function register(RegisterRequest $request){
+        $user_info = $request->validated();
+        $user_info['password'] = bcrypt($user_info['password']); 
+        $user = User::create($user_info);
         auth()->login($user);
-        return redirect('/');
+        return redirect('/home');
     }
 
     // Users log out
     public function logout(){
         auth()->logout();
-        return redirect('/');
+        return redirect('/home');
     }
     
     // Users log in
-    public function login(Request $request){
-        $rules = [
-            // 'loginname' => 'required',
-            'loginemail' => 'required',
-            'loginpassword' => 'required'
-        ];
-        $message = [
-            'loginemail.required'=>'Email is required',
-            'loginpassword' => 'Password is required'
-        ];
-        $incomingFields = $request->validate($rules, $message);
-        if(auth()->attempt(['email'=>$incomingFields['loginemail'],'password'=>$incomingFields['loginpassword']])){
+    public function login(LoginRequest $request){
+        $user_info = $request->validated();
+        if(auth()->attempt(['email'=>$user_info['loginemail'],'password'=>$user_info['loginpassword']])){
             $request->session()->regenerate(); // Generate a new session token
-            return redirect('/');
+            return redirect('/home');
         }
         else{
             return back()->with ('error', 'Wrong Login Credentials');
@@ -76,19 +43,9 @@ class UserController extends Controller
         
     }
 
-    
-    // @foreach($comments as $comment)
-    //     @if ($post->id==$comment->post_id)
-    //         @foreach ($users as $user)                                                 
-    //                 @if ($comment->user_id==$user->id)
-    //                     Comment of {{$user->name}}:{!! $comment->comment !!}
-    //                     {{-- {!! nl2br(e($comment->comment)) !!} --}}
-    //                     @foreach($comment->images as $image)
-    //                     <img src="{{URL::to($image->path)}}" style="height:50px; width:50px" alt="">
-    //                     @endforeach
-    //                 @endif
-    //             <br>
-    //         @endforeach
-    //     @endif
-    // @endforeach
+    public function userHome(Request $request){
+        $posts = Post::all();
+        $images = Image::all();
+        return view('user.user_home',compact('posts', 'images'));
+    }
 }

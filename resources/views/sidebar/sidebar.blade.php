@@ -9,8 +9,7 @@
         <link rel="stylesheet" href="{{asset('assets/css/font.css')}}" >
         <link rel="stylesheet" href="{{url('css/sidebar.css')}}">
         <link rel="stylesheet" href="{{asset('assets/css/bootstrap_sidebar.css')}}">
-        <script src="{{asset('assets/js/jquerry.js')}}"></script>
-        <script src="{{asset('assets/js/bootstrap_sidebar.js')}}"></script>
+        
 
     </head>
     <body>
@@ -20,7 +19,7 @@
         <div class="bg-light border-right" id="sidebar-wrapper">
         <div class="sidebar-heading">Web Page</div>
         <div class="list-group list-group-flush">
-            <a href="/" class="list-group-item list-group-item-action bg-light">Post</a>
+            <a href="/home" class="list-group-item list-group-item-action bg-light">Post</a>
             <a href="/all_address" class="list-group-item list-group-item-action bg-light">Address</a>
             <a href="/all_country" class="list-group-item list-group-item-action bg-light">Country</a>
             <a href="/all_city" class="list-group-item list-group-item-action bg-light">City</a>
@@ -39,7 +38,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                         <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link" href="#">Link</a>
@@ -67,3 +66,5 @@
     </body>
 </html>
 <script src="{{url('js/sidebar.js')}}"></script>
+<script src="{{asset('assets/js/jquerry.js')}}"></script>
+<script src="{{asset('assets/js/bootstrap_sidebar.js')}}"></script>

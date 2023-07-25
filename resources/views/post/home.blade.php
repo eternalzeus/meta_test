@@ -54,7 +54,7 @@
                                             <td>
                                                 @foreach($post['comment'] as $index => $row)
                                                     {!! $row['comment_content'] !!}
-                                                    @foreach(explode(';',$row['comment_image']) as $index => $image)
+                                                    @foreach($row['comment_image'] as $index => $image)
                                                         @if($index > 0)
                                                             <img src="{{URL::to($image)}}"  style="height:100px; width:100px" alt="">
                                                         @endif
@@ -81,7 +81,11 @@
                 </div>
             </div>
         </div>
+        {{$res->links()}}
     </div>
+   
+  
+    
 @endsection
 <script src="{{asset('assets/js/jquerry_address.js')}}" type="text/javascript"></script>
 {{-- <script>

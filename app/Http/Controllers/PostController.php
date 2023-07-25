@@ -15,6 +15,7 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\CommentPostRequest;
 use App\Http\Requests\UpdateImageRequest;
 
+
 class PostController extends Controller
 {
     public function apiPost(Request $request)
@@ -45,7 +46,7 @@ class PostController extends Controller
             }
             DB::table('images')->where('imageable_id',$post->id)->delete();
             $post->delete();
-            return redirect('/'); 
+            return redirect('/home'); 
         }
         else{
             return back()->with ('error', 'Your are not the author of this post');
@@ -91,7 +92,7 @@ class PostController extends Controller
                 $comment->images()->save($image);
             }
         }
-        return redirect('/');
+        return redirect('/home');
         // return back();
     }
 
@@ -99,7 +100,7 @@ class PostController extends Controller
     // Updating Post
     public function actuallyUpdatePost(Post $post, UpdatePostRequest $request) {
         $post->update($request->validated());
-        return redirect('/');
+        return redirect('/home');
     }
 
     // Create new Post
@@ -114,7 +115,7 @@ class PostController extends Controller
                 $post->images()->save($image);
             }
         }
-        return redirect('/')->with('success','Post created successfully');
+        return redirect('/home')->with('success','Post created successfully');
     }
 
     // Delete Image
@@ -133,7 +134,7 @@ class PostController extends Controller
             $post->images()->save($image);
         }
     }
-        return redirect('/');
+        return redirect('/home');
     }
 
     // Update image
@@ -141,31 +142,19 @@ class PostController extends Controller
         $request->validated();
         if($file = $request->file('image')){
             Image::updateImage($file,$image_id)->update();
-            return redirect('/');
+            return redirect('/home');
         }
     }
     
     function postSearch(Request $request){
-        // $total_row = $posts->count();
-        // dd($result->toArray());
-        // $res = [];
-        $posts = Post::postSearch($request);
-        $res = Post::fullPostArray($posts);
-        // foreach($posts as $post) {
-        //     $res[] = [
-        //         'post_id' => $post->id,
-        //         'title' => $post->title,
-        //         'content' => $post->body,
-        //         'comment' => $this->getCommentByPost($post->id),
-        //     ];
-        // }
+        $res = Post::fullPostArray($request);
         return view('post.home',compact('res'));
     }
 
     // Home page
-    public function home () {
+    public function home (Request $request) {
         if(auth()->check()){
-            $posts = Post::all();
+            // $posts = Post::all();
             // $data = Post::join('comments', 'comments.post_id', '=', 'posts.id')
             //     ->join('users', 'comments.user_id', '=', 'users.id')
             //     ->rightjoin('posts as p', 'p.id', '=', 'comments.post_id')
@@ -173,18 +162,6 @@ class PostController extends Controller
             //     // ->paginate(2);
             //     ->get();
 
-            $res = Post::fullPostArray($posts);
-            // foreach($posts as $post) {
-            //     $res[] = [
-            //         'post_id' => $post->id,
-            //         'title' => $post->title,
-            //         'content' => $post->body,
-            //         'comment' => $this->getCommentByPost($post->id),
-            //     ];
-            // }
-            // dd($res[0]['comment'][0]['comment_content']);
-
-            // dd($res);
             // foreach($data as $value) {
             //     if (!empty($res[$value['post_id']] )) {
             //         $res[$value['post_id']] = [
@@ -198,16 +175,15 @@ class PostController extends Controller
             //             'content' => $value['username'] .': ' .$value['content'],
             //             'comment' => $value['title'],
             //         ];
-            //     }
-                
+            //     }    
             // }
-            // dd($res);
-            // dd($data->toArray());
+            $res = Post::fullPostArray($request);
 
         }
     
         return view('post.home',compact('res'));
     }
+
 }
 
 
