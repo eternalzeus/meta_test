@@ -1,11 +1,12 @@
 <?php
 
 use App\Models\Post;
-use App\Http\Controllers\AddressController;
 use App\Http\Middleware\CheckLogin;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,7 +75,15 @@ Route::group(['middleware' => ['check_login']], function () {
 	Route::get('/edit_district/{district_id}',[AddressController::class,'editDistrict']);
 	Route::put('/edit_district/{district}',[AddressController::class,'saveEditDistrict']);
 	Route::delete('/delete_district/{district}',[AddressController::class,'deleteDistrict']); // Delete district
-	// $url = route('editPost', ['id' => ...]);
+	
+	// Product route
+	Route::get('/all_product', [ProductController::class,'allProduct'])->name('allProduct'); 
+	Route::get('/new_product',[ProductController::class,'newProduct'])->name('newProduct'); 
+	Route::post('/new_product',[ProductController::class,'createProduct']);	
+	Route::delete('/delete_product/{product}',[ProductController::class,'deleteProduct']); 
+	Route::get('/edit_product/{id}',[ProductController::class,'showEditProduct'])->name('editProduct'); 
+	Route::put('/edit_product/{product}',[ProductController::class,'saveEditProduct']); 
 
+	// $url = route('editPost', ['id' => ...]);
 });
 

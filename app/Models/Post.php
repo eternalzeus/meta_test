@@ -5,12 +5,13 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Image;
 use App\Models\Comment;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use App\Http\Helpers\CustomPaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model    // map to posts table
 {
@@ -56,7 +57,7 @@ class Post extends Model    // map to posts table
     private static function paginate($items, $perPage = 3, $page = null, $options = []){
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+        return new CustomPaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 
     private static function getUserNameByComment($userId)
@@ -89,7 +90,6 @@ class Post extends Model    // map to posts table
         foreach ($images as $image){
             $res [] = $image->path;
         }
-        // dd($res);
         return $res;
     }
     

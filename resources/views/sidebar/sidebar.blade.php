@@ -9,8 +9,10 @@
         <link rel="stylesheet" href="{{asset('assets/css/font.css')}}" >
         <link rel="stylesheet" href="{{url('css/sidebar.css')}}">
         <link rel="stylesheet" href="{{asset('assets/css/bootstrap_sidebar.css')}}">
-        
-
+        <script src="{{asset('assets/js/jquerry_address.js')}}" type="text/javascript"></script>
+        <script src="{{url('js/sidebar.js')}}"></script>
+        <script src="{{asset('assets/js/jquerry.js')}}"></script>
+        <script src="{{asset('assets/js/bootstrap_sidebar.js')}}"></script>
     </head>
     <body>
         <div class="d-flex" id="wrapper">
@@ -24,6 +26,7 @@
             <a href="/all_country" class="list-group-item list-group-item-action bg-light">Country</a>
             <a href="/all_city" class="list-group-item list-group-item-action bg-light">City</a>
             <a href="/all_district" class="list-group-item list-group-item-action bg-light">District</a>
+            <a href="/all_product" class="list-group-item list-group-item-action bg-light">Product</a>
         </div>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -65,6 +68,4 @@
         <!-- /#wrapper -->
     </body>
 </html>
-<script src="{{url('js/sidebar.js')}}"></script>
-<script src="{{asset('assets/js/jquerry.js')}}"></script>
-<script src="{{asset('assets/js/bootstrap_sidebar.js')}}"></script>
+

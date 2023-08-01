@@ -154,7 +154,13 @@ class PostController extends Controller
     // Home page
     public function home (Request $request) {
         if(auth()->check()){
-            // $posts = Post::all();
+            $res = Post::fullPostArray($request);
+        }
+        return view('post.home',compact('res'));
+    }
+}
+
+// $posts = Post::all();
             // $data = Post::join('comments', 'comments.post_id', '=', 'posts.id')
             //     ->join('users', 'comments.user_id', '=', 'users.id')
             //     ->rightjoin('posts as p', 'p.id', '=', 'comments.post_id')
@@ -177,14 +183,6 @@ class PostController extends Controller
             //         ];
             //     }    
             // }
-            $res = Post::fullPostArray($request);
-
-        }
-    
-        return view('post.home',compact('res'));
-    }
-
-}
 
 
 

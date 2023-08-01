@@ -101,3 +101,20 @@ Breadcrumbs::for('edit_district', function (BreadcrumbTrail $trail) {
     $trail->parent('all_district');
     $trail->push('Edit District');
 });
+
+// All Product
+Breadcrumbs::for('all_product', function (BreadcrumbTrail $trail) {
+    $trail->push('All Product', route('allProduct'));
+});
+
+// All Product > New Product
+Breadcrumbs::for('new_product', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_product');
+    $trail->push('New Product');
+});
+
+// All Product > Edit Product
+Breadcrumbs::for('edit_product', function (BreadcrumbTrail $trail) {
+    $trail->parent('all_product');
+    $trail->push('Edit Product');
+});

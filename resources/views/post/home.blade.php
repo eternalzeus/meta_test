@@ -83,30 +83,5 @@
         </div>
         {{$res->links()}}
     </div>
-   
-  
-    
 @endsection
 <script src="{{asset('assets/js/jquerry_address.js')}}" type="text/javascript"></script>
-{{-- <script>
-    $(document).ready(function(){
-        
-        function fetch_customer_data(query){
-            
-            $.ajax({
-                url:"{{ route('postSearch') }}",
-                method:'GET',
-                data:{query:query},
-                dataType:'json',
-                success:function(data){
-                    $('tbody').html(data.table_data);
-                    $('#total_records').text("Total search data: " +data.total_data);
-                }
-            })
-        }
-        $(document).on('keyup', '#search', function(){
-            var query = $(this).val();
-            fetch_customer_data(query);
-        });
-    });
-</script> --}}

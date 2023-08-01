@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Image;
 use App\Models\Comment;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\LoginRequest;
@@ -44,8 +45,8 @@ class UserController extends Controller
     }
 
     public function userHome(Request $request){
-        $posts = Post::all();
+        $products = Product::where('id', '>', 0)->paginate(4);
         $images = Image::all();
-        return view('user.user_home',compact('posts', 'images'));
+        return view('user.user_home',compact('products', 'images'));
     }
 }
