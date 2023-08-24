@@ -27,6 +27,7 @@
             <a href="/all_city" class="list-group-item list-group-item-action bg-light">City</a>
             <a href="/all_district" class="list-group-item list-group-item-action bg-light">District</a>
             <a href="/all_product" class="list-group-item list-group-item-action bg-light">Product</a>
+            <a href="/all_category" class="list-group-item list-group-item-action bg-light">Category</a>
         </div>
         </div>
         <!-- /#sidebar-wrapper -->

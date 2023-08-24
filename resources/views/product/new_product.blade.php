@@ -18,9 +18,9 @@
         </div>
         <div class="mb-3">
           <label for="validationTooltip01">Description</label>
-          <input type="text" class="form-control" name="description" placeholder="Description">
+          <textarea id="editor" class="form-control" name="description" ></textarea>
           @error('description')
-            <span style="color: red;"> {{$message}} </span>
+              <span style="color: red;"> {{$message}} </span>
           @enderror
         </div>
         <div class="mb-3">
@@ -41,5 +41,6 @@
     </form>
   </div>
 </div>
-
+<script type="text/javascript" src="{{url('js/ckeditor.js')}}"></script>
 @endsection
+<script src="{{asset('assets/ckeditor5/build/ckeditor.js')}}" type="text/javascript"></script>

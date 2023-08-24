@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -11,10 +12,18 @@ class Product extends Model
 
     use HasFactory;
     
-    public function user(){ 
+    public function user()
+    { 
         return $this->belongsTo(User::class,'user_id'); // Relationship between User_id at the Post table to the name of that User_id
     }
-    public function images(){
+
+    public function images()
+    {
         return $this->morphMany(Image::class,'imageable');
+    }
+
+    public function categories()
+    {
+        return $this->belongstoMany(Category::class);
     }
 }

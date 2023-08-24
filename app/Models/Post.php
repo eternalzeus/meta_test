@@ -19,19 +19,23 @@ class Post extends Model    // map to posts table
 
     protected $fillable = ['title','body','image','user_id'];
 
-    public function user(){ 
+    public function user()
+    { 
         return $this->belongsTo(User::class,'user_id'); // Relationship between User_id at the Post table to the name of that User_id
     }
 
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany(Comment::class,'post_id');
     }
 
-    public function images(){
+    public function images()
+    {
         return $this->morphMany(Image::class,'imageable');
     }
 
-    public static function fullPostArray($request){
+    public static function fullPostArray($request)
+    {
         $posts = DB::table('posts');
         if(!empty($request->title)){
             $posts = $posts->where('title',"LIKE",'%'.$request->title.'%');
@@ -54,7 +58,8 @@ class Post extends Model    // map to posts table
         return $res;
     }
 
-    private static function paginate($items, $perPage = 3, $page = null, $options = []){
+    private static function paginate($items, $perPage = 3, $page = null, $options = [])
+    {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
         return new CustomPaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
@@ -66,6 +71,7 @@ class Post extends Model    // map to posts table
         if ($user){
             return $user->name;
         }
+
         return null;
     }
     private static function getCommentByPost($postId)
@@ -79,6 +85,7 @@ class Post extends Model    // map to posts table
             'comment_image' => self::getImagesByComment($comment->id),
             ];
         }
+
         return $res;
     }
 
@@ -90,6 +97,7 @@ class Post extends Model    // map to posts table
         foreach ($images as $image){
             $res [] = $image->path;
         }
+        
         return $res;
     }
     

@@ -30,6 +30,7 @@ class PostController extends Controller
             'status' => 200,
             'message' => 'created ok',
         ];
+
         return $res;
     }
 
@@ -38,7 +39,8 @@ class PostController extends Controller
         return view('post.new_post');
     }
     // Delete Post
-    public function deletePost(Post $post, Image $image){
+    public function deletePost(Post $post, Image $image)
+    {
         if(auth()->user()->id === $post['user_id']){ // If you are the author of this Post
             $names = Image::select('name')->where('imageable_id',$post->id)->get();
             foreach($names as $name){
@@ -57,18 +59,22 @@ class PostController extends Controller
     public function showViewScreen($postId){
         $post = Post::find($postId);
         $images = $post->images;
+
         return view('post.view_post',compact('post','images'));
     }
 
     // Edit image
-    public function showEditImage($postId){
+    public function showEditImage($postId)
+    {
         $images = Image::all();
         $post = Post::find($postId);
+
         return view('post.edit-image',compact('post','images'));
     }
 
     // Edit Post Screen
-    public function showEditScreen(Post $post, $Id) {
+    public function showEditScreen(Post $post, $Id) 
+    {
         $post = Post::find($Id);
         $images = $post->images;
         if(auth()->user()->id !== $post['user_id']){
@@ -80,7 +86,8 @@ class PostController extends Controller
     }
 
     // Comment
-    public function comment(Post $post, CommentPostRequest $request, $Id){
+    public function comment(Post $post, CommentPostRequest $request, $Id)
+    {
         Comment::create($request->validated()+[
             'post_id' => $Id,
             'user_id' => auth()->id()
@@ -92,19 +99,23 @@ class PostController extends Controller
                 $comment->images()->save($image);
             }
         }
+
         return redirect('/home');
         // return back();
     }
 
 
     // Updating Post
-    public function actuallyUpdatePost(Post $post, UpdatePostRequest $request) {
+    public function actuallyUpdatePost(Post $post, UpdatePostRequest $request) 
+    {
         $post->update($request->validated());
+
         return redirect('/home');
     }
 
     // Create new Post
-    public function createPost(NewPostRequest $request){
+    public function createPost(NewPostRequest $request)
+    {
         Post::create($request->validated()+[
             'user_id' => auth()->id()
         ]);
@@ -115,47 +126,58 @@ class PostController extends Controller
                 $post->images()->save($image);
             }
         }
+
         return redirect('/home')->with('success','Post created successfully');
     }
 
     // Delete Image
-    public function deleteImage(Image $image){
+    public function deleteImage(Image $image)
+    {
         Storage::disk('public')->delete($image->name);
         $image->delete();
+
         return back();
     }
 
     // Add image
-    public function addImage(Request $request, $Id){ // Id is taken from Route '/add-image/{id}'    
-    if($files = $request->file('images')){
-        foreach ($files as $file){
-            $image = Image::createImage($file);
-            $post = Post::find($Id);
-            $post->images()->save($image);
+    public function addImage(Request $request, $Id) // Id is taken from Route '/add-image/{id}'    
+    { 
+        if($files = $request->file('images')){
+            foreach ($files as $file){
+                $image = Image::createImage($file);
+                $post = Post::find($Id);
+                $post->images()->save($image);
+            }
         }
-    }
+
         return redirect('/home');
     }
 
     // Update image
-    public function editImage(UpdateImageRequest $request, $image_id) {
+    public function editImage(UpdateImageRequest $request, $image_id) 
+    {
         $request->validated();
         if($file = $request->file('image')){
             Image::updateImage($file,$image_id)->update();
+
             return redirect('/home');
         }
     }
     
-    function postSearch(Request $request){
+    function postSearch(Request $request)
+    {
         $res = Post::fullPostArray($request);
+
         return view('post.home',compact('res'));
     }
 
     // Home page
-    public function home (Request $request) {
+    public function home (Request $request) 
+    {
         if(auth()->check()){
             $res = Post::fullPostArray($request);
         }
+
         return view('post.home',compact('res'));
     }
 }

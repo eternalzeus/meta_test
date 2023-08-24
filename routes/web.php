@@ -24,18 +24,16 @@ use App\Http\Controllers\ProductController;
 Route::post('/register',[UserController::class,'register']);
 Route::get('/logout',[UserController::class,'logout']);
 Route::post('/login',[UserController::class,'login']);
-Route::get('/register_page',function(){
-    return view(view:'user.register_page');
-});
-Route::get('/login_page',function(){
-    return view(view:'user.login_page');
-});
+Route::get('/register_page',[UserController::class,'showRegister']);
+Route::get('/login_page',[UserController::class,'showLogin']);
 Route::get('/',[UserController::class,'userHome']);
+Route::get('/product_by_cat/{id}',[UserController::class,'productByCat']);
+Route::get('/product_detail/{id}',[UserController::class,'productDetail']);
 
 // Blog post related routes
 
-Route::group(['middleware' => ['check_login']], function () {
-	
+Route::group(['middleware' => ['check_login']], function () 
+{
 	// Post routes
 	Route::get('/home', [PostController::class,'home'])->name('home'); // Home
 	Route::get('/create-post',[PostController::class,'getPost'])->name('createPost'); // View create post
@@ -83,6 +81,13 @@ Route::group(['middleware' => ['check_login']], function () {
 	Route::delete('/delete_product/{product}',[ProductController::class,'deleteProduct']); 
 	Route::get('/edit_product/{id}',[ProductController::class,'showEditProduct'])->name('editProduct'); 
 	Route::put('/edit_product/{product}',[ProductController::class,'saveEditProduct']); 
+	Route::get('/all_category', [ProductController::class,'allCategory'])->name('allCategory'); 
+	Route::get('/new_category', [ProductController::class,'newCategory']);
+	Route::post('/new_category', [ProductController::class,'addNewCategory']);
+	Route::get('/edit_category/{id}',[ProductController::class,'showEditCategory']);
+	Route::put('/edit_category/{id}',[ProductController::class,'saveEditCategory']);
+	Route::post('/add_category',[ProductController::class,'addCategory']);	
+	Route::delete('/delete_category/{category}',[ProductController::class,'deleteCategory']); 
 
 	// $url = route('editPost', ['id' => ...]);
 });

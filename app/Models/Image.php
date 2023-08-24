@@ -11,20 +11,24 @@ class Image extends Model
 {
     protected $guarded = [];
     use HasFactory;
-    public function imageable(){
+    public function imageable()
+    {
         return $this->morphTo();
     }
     
-    public static function createImage($data){
+    public static function createImage($data)
+    {
         $image = self::common($data);
         return $image;
     }
-    public static function updateImage($data,$id){
+    public static function updateImage($data,$id)
+    {
         $image = self::common($data, $id);
         return $image;
     }
 
-    public static function common($data, $id = null) {
+    public static function common($data, $id = null) 
+    {
         if ($id) {
             $image = Image::find($id);
             Storage::disk('public')->delete($image->name);
