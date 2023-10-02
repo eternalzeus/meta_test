@@ -1,5 +1,13 @@
 @extends('layout.layout_user')
 @section('content')
+
+    <div class="form-group">
+      <form action="/user_product_search" method="GET">
+          <input type="text" name="product_name" class="form-control col-md-4 float-left" placeholder="Search product" />
+          <button type="submit" class="btn btn-info"> Search</button>
+      </form>
+    </div>
+
     <!-- Sliders -->
     <div id="carouselExampleCaptions" class="carousel slide">
       <div class="carousel-indicators">

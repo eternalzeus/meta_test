@@ -29,6 +29,8 @@ Route::get('/login_page',[UserController::class,'showLogin']);
 Route::get('/',[UserController::class,'userHome']);
 Route::get('/product_by_cat/{id}',[UserController::class,'productByCat']);
 Route::get('/product_detail/{id}',[UserController::class,'productDetail']);
+Route::get('/user_product_search',[UserController::class,'userProductSearch']);
+Route::get('/currency',[UserController::class,'currencyExchange']);
 
 // Blog post related routes
 

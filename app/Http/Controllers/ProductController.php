@@ -14,6 +14,31 @@ use App\Http\Requests\UpdateProductRequest;
 
 class ProductController extends Controller
 {
+    public function apiProduct()
+    {
+        // $data = [
+        //     'title' => $request->get('title'),
+        //     'body' => $request->get('body'),
+        //     'user_id' => $request->get('user_id'),
+        // ];
+        // Post::create($data);
+        // $res = [
+        //     'status' => 200,
+        //     'message' => 'created ok',
+        // ];
+        $products = Product::all();
+
+        return $products;
+        
+    }
+
+    public function productSearch($product_name)
+    {
+
+        return Product::where("product_name", "like" , "%".$product_name."%")->get();
+        
+    }
+
     public function allProduct (Request $request) 
     {  
         $products = Product::where('id', '>', 0)->paginate(4);

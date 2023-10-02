@@ -8,6 +8,7 @@ use App\Models\Image;
 use App\Models\Comment;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\LoginRequest;
@@ -77,7 +78,7 @@ class UserController extends Controller
             return $query->where('categories.id', '=', $id);
         })->paginate(4);
         $images = Image::all();
-        $categories=Category::all();
+        $categories = Category::all();
 
         return view('user.user_home',compact('products', 'images', 'categories'));
     }
@@ -86,9 +87,43 @@ class UserController extends Controller
     {
         $product = Product::find($id);
         $images = $product->images;
-        $categories=Category::all();
+        $categories = Category::all();
 
         return view('user.product_detail',compact('product', 'images', 'categories'));
     }
 
+    function userProductSearch(Request $request)
+    {
+        // $res = User::searchProduct($request);
+        $products = Product::where('product_name',"LIKE",'%'.$request->product_name.'%')->paginate(4);
+        $images = Image::all();
+        $categories = Category::all();
+
+        return view('user.user_home',compact('products', 'images', 'categories'));
+    }
+
+    function currencyExchange() {
+        
+        $ch = curl_init();
+        $headr = array();
+        $url = 'https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx?b=10';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headr);
+        curl_setopt($ch, CURLOPT_URL, $url ); // get the url contents
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch,CURLOPT_USERAGENT,'phananh1812');
+        $data = curl_exec($ch); // execute curl request
+        curl_close($ch);
+        $xml = simplexml_load_string($data);
+        $json = json_encode($xml);
+        $array = json_decode($json,TRUE);
+        // dd($array['Exrate']);
+        foreach($array['Exrate'] as $currency){
+            Currency::create($currency['@attributes']);
+        }
+        $categories = Category::all();
+        $currencies = Currency::orderBy('id', 'desc')->take(20)->get();
+        return view('user.currency',compact('categories', 'currencies'));
+    }
 }

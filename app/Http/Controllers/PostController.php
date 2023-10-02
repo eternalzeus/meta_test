@@ -18,26 +18,12 @@ use App\Http\Requests\UpdateImageRequest;
 
 class PostController extends Controller
 {
-    public function apiPost(Request $request)
-    {
-        $data = [
-            'title' => $request->get('title'),
-            'body' => $request->get('body'),
-            'user_id' => $request->get('user_id'),
-        ];
-        Post::create($data);
-        $res = [
-            'status' => 200,
-            'message' => 'created ok',
-        ];
-
-        return $res;
-    }
 
     public function getPost()
     {
         return view('post.new_post');
     }
+    
     // Delete Post
     public function deletePost(Post $post, Image $image)
     {
@@ -167,7 +153,7 @@ class PostController extends Controller
     function postSearch(Request $request)
     {
         $res = Post::fullPostArray($request);
-
+        
         return view('post.home',compact('res'));
     }
 
